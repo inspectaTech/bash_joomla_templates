@@ -1,0 +1,375 @@
+#!/bin/bash
+#Joomla module_maker template
+
+echo "what is the file title of your module (_underscore no spaces)? "
+echo "(for example test_Mod) : "
+read module_name;
+module_name=${module_name,,};
+mn_caps=${module_name^^};
+mn_init=${module_name^};
+mn_full="mod_"$module_name;
+mn_full_caps="MOD_"$mn_caps
+my_year=$(date +%Y)
+my_month_year=$(date +%m-%Y)
+
+echo "what is the file title of the component associated with this module(_underscore no spaces)? "
+echo "(don't include 'com_'  for example test_Comp) : "
+read component_name;
+
+echo "what is the official title of your module (spaces allowed here)? "
+echo "(for example Test Module)"
+read official_title
+
+echo "what is the authors name? (spaces allowed here)? "
+read authors_name
+
+echo "what email address would you like to associate with this module? "
+read display_email
+
+echo "what web address would you like to associate with this module? "
+read display_url
+
+echo "what company name would you like to associate with this module? "
+read company_name
+
+
+mkdir "mod_"$module_name"_v1.0.0"
+cd "mod_"$module_name"_v1.0.0"
+
+mkdir language
+#change to language directory
+cd language
+#make html placeholder
+echo "<!DOCTYPE html><title></title>" > index.html
+mkdir en-GB
+#enter new dir
+cd en-GB
+echo $mn_full_caps'_FIELD_COUNT_LABEL="Count"
+'$mn_full_caps'_FIELD_COUNT_DESC="The number of items to display (default is 5)"' > "en-GB."$mn_full".ini"
+echo "<!DOCTYPE html><title></title>" > index.html
+
+#back to main dir
+cd ../..
+mkdir tmpl
+cd tmpl
+echo "<!DOCTYPE html><title></title>" > index.html
+echo '<?php defined("_JEXEC") or die ; ?>
+
+<div class="'$module_name'<?php echo $moduleclass_sfx ?>"><!-- latestextensions -->
+    <div class="row-striped">
+    <?php foreach ($list as $item) : ?>
+        <div class="row-fluid">
+            <div class="span6">
+                <strong class="row-title">
+                    <?php echo $item->name; ?>
+                </strong>
+            </div>
+            <div class="span3 hidden-phone">
+                <?php echo $item->type; ?>
+            </div>
+            <div class="span3 hidden-tablet hidden-phone">
+                <?php echo $item->id; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    </div>
+</div>' > default.php
+
+cd ../
+mkdir xfiles
+cd xfiles
+echo "<!DOCTYPE html><title></title>" > index.html
+mkdir css
+cd css
+echo "<!DOCTYPE html><title></title>" > index.html
+echo '*{box-sizing:border-box;}
+
+
+#mm_right_panel_1 .ui-panel-inner{padding-top:0px;}
+
+
+
+
+
+/*panel modifications*/
+/** SiteSide Module **/
+
+/***************** mm bugfix record 001 **********************/
+.ui-li-static.ui-collapsible> .ui-collapsible-heading{margin:0 !important;}
+.ui-li-static.ui-collapsible{padding:0 !important;}
+.ui-li-static.ui-collapsible> .ui-collapsible-heading> .ui-btn{border-top-width:0 !important;}
+.ui-li-static.ui-collapsible> .ui-collapsible-heading.ui-collapsible-heading-collapsed > .ui-btn,
+.ui-li-static.ui-collapsible> .ui-collapsible-content{border-bottom-width:0 !important;}
+/***************** mm bugfix record 001 **********************/
+
+/***************************    Jquery Mobile css    ***************************/
+/**********  responsive panel modifications  *************/
+
+.ui-panel{width:12em !important;}/* fixes both when one side is open "side" Panel width*/
+/*left "Push" Panel*/
+/*
+.ui-panel-wrapper.ui-panel-animate.ui-panel-page-content-position-left
+{transform:translate3d(12em,0,0);-moz-transform:translate3d(12em,0,0);-webkit-transform:translate3d(12em,0,0);}
+*/
+
+/*
+
+.ui-panel.ui-panel-animate.ui-panel-position-left.ui-panel-display-overlay,
+.ui-panel.ui-panel-animate.ui-panel-position-left.ui-panel-display-push
+{transform:translate3d(-12em,0,0);-moz-transform:translate3d(-12em,0,0);-webkit-transform:translate3d(-12em,0,0);}
+*/
+/*End left "Push" Panel*/
+
+
+/*right "Push" Panel*/
+/*
+.ui-panel-wrapper.ui-panel-animate.ui-panel-page-content-position-right
+{transform:translate3d(-12em,0,0);-moz-transform:translate3d(-12em,0,0);-webkit-transform:translate3d(-12em,0,0);}
+*/
+/*
+.ui-panel.ui-panel-animate.ui-panel-position-right.ui-panel-display-overlay,
+.ui-panel.ui-panel-animate.ui-panel-position-right.ui-panel-display-push
+{transform:translate3d(12em,0,0);-moz-transform:translate3d(12em,0,0);-webkit-transform:translate3d(12em,0,0);}
+*/
+
+/**/
+/*End right "Push" Panel*/
+
+
+
+/*Right reveal panel  */
+
+.ui-panel-wrapper.ui-panel-animate.ui-panel-page-content-position-right.ui-bar-a
+{transform:translate3d(-12em,0,0);-moz-transform:translate3d(-12em,0,0);-webkit-transform:translate3d(-12em,0,0);}
+/**/
+.ui-panel-wrapper.ui-panel-animate.ui-panel-page-content-position-left.ui-bar-a
+{transform:translate3d(12em,0,0);-moz-transform:translate3d(12em,0,0);-webkit-transform:translate3d(12em,0,0);}
+/**/
+/**/
+
+/*Left reveal panel */
+.ui-panel-page-content-position-left{left:12em;right:-12em;}
+.ui-panel-page-content-position-right{left:-12em;right:12em;}/*needed?*/
+
+
+.ui-panel-animate.ui-panel-page-content-position-left
+{transform:translate3d(12em,0,0);-moz-transform:translate3d(12em,0,0);-webkit-transform:translate3d(12em,0,0);}
+
+.ui-panel-animate.ui-panel-page-content-position-right
+{transform:translate3d(-12em,0,0);-moz-transform:translate3d(-12em,0,0);-webkit-transform:translate3d(-12em,0,0);}
+/* */
+.mm_left_button_box{float:left;}
+.mm_right_button_box{float:right;}
+
+/*for the empty list items */
+.empty_list_H a{padding:1.33em;}
+
+/*issue bugfix*/
+/*.ui-panel-dismiss{display:none !important;}*/
+
+/*.ui-panel-page-content-position-left{left:12em;right:-12em;}*/
+
+
+/**********************   Custom Bugfix for gap at wide screen   *********************************/
+@media(min-width: 55em){
+.ui-responsive-panel .ui-panel-page-content-open.ui-panel-page-content-position-left
+{margin-right:12em !important;}
+.ui-responsive-panel .ui-panel-page-content-open.ui-panel-page-content-position-right
+{margin-left:12em !important;}
+}
+/**********************   End Custom Bugfix for gap at wide screen   ****************************/
+
+
+/********************************************************************************/
+
+/***************** test rules **********************/
+.test_yellow{border:1px solid yellow !important;}
+.test_red{border:1px solid red !important;}
+.test_blue{border:1px solid blue !important;}
+.test_green{border:1px solid green !important;}
+.test_purple{border:1px solid purple !important;}
+.test_orange{border:1px solid orange !important;}
+/***************** test rules **********************/' > $module_name"_module.css"
+cd ../
+
+mkdir js
+cd js
+echo "<!DOCTYPE html><title></title>" > index.html
+echo 'alert("'$module_name'.js is running");
+
+var component_title = "com_'$component_name'";
+
+
+    function testModule()
+    {
+        //this calls the controller.php on the admin side.  but the admin side is password protected.  I need the site
+        //side controller.
+        //var ctrl_Url = "administrator/index.php?option=com_'$component_name'&task=testModule&format=raw";//this works
+        var ctrl_Url = "index.php?option=" + component_title + "&task=testModule&format=raw";//this works
+
+        jQuery(document).ready(function()
+        {
+           alert("testAjax running!");
+           jQuery.ajax(
+           {
+
+            url:ctrl_Url,
+            data:{"test":"whatever"},
+            type:"POST",
+               success:function(result)
+               {
+                   alert("result data = " + result);//string
+
+
+                }
+
+            })
+        })//end ajax
+
+
+    }//end testModule
+
+    function getMenuData(mId)
+    {
+        //alert("module id = " + mId);
+
+        var ctrl_Url = "index.php?option=" + component_title + "&task=getMenuData&format=raw";//this works
+
+        jQuery(document).ready(function()
+        {
+           //alert("getMenuData running!");
+           jQuery.ajax(
+           {
+
+            url:ctrl_Url,
+            data:{"module_id":mId},
+            type:"POST",
+               success:function(result)
+               {
+                   //alert("result data = " + result);//string
+
+                    var makeMenu = new menuMaker(result);
+                    makeMenu.display();
+
+                }
+
+            })
+        })//end ajax
+
+    }//end getMenuData
+
+
+
+' > $module_name"_module.js"
+
+#return to the main dir
+cd ../..
+
+echo '<?php
+defined("_JEXEC") or die;
+
+
+abstract class '$mn_full'Helper  //mod_latestextensionsHelper
+{
+
+    public static function getList(&$params)
+    {
+
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        $query->select("name, extension_id, type");
+        $query->from("#__extensions");
+        $query->order("extension_id DESC");
+        $db->setQuery($query, 0, $params->get("count",5));
+
+        try
+        {
+            $results = $db->loadObjectList();
+        }
+        catch (RuntimeException $e)
+        {
+            JError::raiseError(500, $e->getMessage());
+            return false;
+        }
+
+        foreach($results as $k => $result)
+        {
+            $results[$k] = new stdClass;
+            $results[$k]->name = htmlspecialchars($result->name);
+            $results[$k]->id = (int)$result->extension_id;
+            $results[$k]->type = htmlspecialchars($result->type);
+        }
+
+    return $results;
+
+    }
+
+}' > helper.php
+
+echo "<!DOCTYPE html><title></title>" > index.html
+
+echo '<?php
+defined("_JEXEC") or die;
+
+require_once __DIR__ . "/helper.php";
+
+$list = mod_'$module_name'Helper::getList($params);//mod_latestextensionsHelper
+$moduleclass_sfx = htmlspecialchars($params->get("moduleclass_sfx"));
+require JModuleHelper::getLayoutPath("mod_'$module_name'",$params->get("layout","default"));//"mod_latestextensions"
+
+
+		$module_name = "'$module_name'";//without the "mod_"
+
+        //link JQuery mobile api
+        $modLink = JFactory::getDocument();
+
+
+        $modStyleLoc = JUri::base() . "modules/mod_" . $module_name . "/xfiles/css/" . $module_name . "_module.css";
+        $modLink->addStyleSheet($modStyleLoc);
+
+
+        //mobilemenu javascript file
+        $modScriptLoc = JUri::base() . "modules/mod_" . $module_name . "/xfiles/js/" . $module_name . "_module.js";
+		$modLink->addScript($modScriptLoc);' > $mn_full".php"
+
+echo '<?xml version="1.0" encoding="utf-8" ?>
+<extension type="module"
+version="3.0"
+method="upgrade"
+client="site">
+    <name>'$official_title'</name><!-- Latest Extensions -->
+    <creationDate>'$my_month_year'</creationDate>
+    <author>'$authors_name'</author>
+    <authorEmail>'$display_email'</authorEmail>
+    <authorUrl>'$display_url'</authorUrl>
+    <copyright> (c) '$my_year' '$company_name' llc. all rights reserved.</copyright>
+    <license></license>
+    <version>1.0.0</version>
+    <description>Displays the most recently installed extensions.</description>
+    <files>
+        <filename module="mod_'$module_name'">mod_'$module_name'.php</filename><!-- module="mod_latestextensions">mod_latestextensions.php -->
+        <filename>helper.php</filename>
+        <filename>index.html</filename>
+        <folder>tmpl</folder>
+		<folder>xfiles</folder>
+    </files>
+    <languages>
+        <language tag="en-GB">language/en-GB/en-GB.mod_'$module_name'.ini</language><!-- en-GB.mod_latestextensions.ini -->
+    </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="count" type="text" default="5" label="MOD_'$mn_caps'_FIELD_COUNT_LABEL"
+                description="MOD_'$mn_caps'_FIELD_COUNT_DESC" />
+            </fieldset><!-- label="MOD_LATESTEXTENSIONS_FIELD_COUNT_LABEL"
+                description="MOD_LATESTEXTENSIONS_FIELD_COUNT_DESC" -->
+
+            <fieldset name="advanced">
+                <field name="moduleclass_sfx" type="text"
+                label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+                description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+            </fieldset>
+        </fields>
+    </config>
+</extension>' > $mn_full".xml"
