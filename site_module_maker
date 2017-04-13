@@ -85,100 +85,71 @@ echo "<!DOCTYPE html><title></title>" > index.html
 echo '*{box-sizing:border-box;}
 
 
-#mm_right_panel_1 .ui-panel-inner{padding-top:0px;}
-
-
-
-
-
-/*panel modifications*/
-/** SiteSide Module **/
-
-/***************** mm bugfix record 001 **********************/
-.ui-li-static.ui-collapsible> .ui-collapsible-heading{margin:0 !important;}
-.ui-li-static.ui-collapsible{padding:0 !important;}
-.ui-li-static.ui-collapsible> .ui-collapsible-heading> .ui-btn{border-top-width:0 !important;}
-.ui-li-static.ui-collapsible> .ui-collapsible-heading.ui-collapsible-heading-collapsed > .ui-btn,
-.ui-li-static.ui-collapsible> .ui-collapsible-content{border-bottom-width:0 !important;}
-/***************** mm bugfix record 001 **********************/
-
-/***************************    Jquery Mobile css    ***************************/
-/**********  responsive panel modifications  *************/
-
-.ui-panel{width:12em !important;}/* fixes both when one side is open "side" Panel width*/
-/*left "Push" Panel*/
-/*
-.ui-panel-wrapper.ui-panel-animate.ui-panel-page-content-position-left
-{transform:translate3d(12em,0,0);-moz-transform:translate3d(12em,0,0);-webkit-transform:translate3d(12em,0,0);}
-*/
-
-/*
-
-.ui-panel.ui-panel-animate.ui-panel-position-left.ui-panel-display-overlay,
-.ui-panel.ui-panel-animate.ui-panel-position-left.ui-panel-display-push
-{transform:translate3d(-12em,0,0);-moz-transform:translate3d(-12em,0,0);-webkit-transform:translate3d(-12em,0,0);}
-*/
-/*End left "Push" Panel*/
-
-
-/*right "Push" Panel*/
-/*
-.ui-panel-wrapper.ui-panel-animate.ui-panel-page-content-position-right
-{transform:translate3d(-12em,0,0);-moz-transform:translate3d(-12em,0,0);-webkit-transform:translate3d(-12em,0,0);}
-*/
-/*
-.ui-panel.ui-panel-animate.ui-panel-position-right.ui-panel-display-overlay,
-.ui-panel.ui-panel-animate.ui-panel-position-right.ui-panel-display-push
-{transform:translate3d(12em,0,0);-moz-transform:translate3d(12em,0,0);-webkit-transform:translate3d(12em,0,0);}
-*/
-
-/**/
-/*End right "Push" Panel*/
-
-
-
-/*Right reveal panel  */
-
-.ui-panel-wrapper.ui-panel-animate.ui-panel-page-content-position-right.ui-bar-a
-{transform:translate3d(-12em,0,0);-moz-transform:translate3d(-12em,0,0);-webkit-transform:translate3d(-12em,0,0);}
-/**/
-.ui-panel-wrapper.ui-panel-animate.ui-panel-page-content-position-left.ui-bar-a
-{transform:translate3d(12em,0,0);-moz-transform:translate3d(12em,0,0);-webkit-transform:translate3d(12em,0,0);}
-/**/
-/**/
-
-/*Left reveal panel */
-.ui-panel-page-content-position-left{left:12em;right:-12em;}
-.ui-panel-page-content-position-right{left:-12em;right:12em;}/*needed?*/
-
-
-.ui-panel-animate.ui-panel-page-content-position-left
-{transform:translate3d(12em,0,0);-moz-transform:translate3d(12em,0,0);-webkit-transform:translate3d(12em,0,0);}
-
-.ui-panel-animate.ui-panel-page-content-position-right
-{transform:translate3d(-12em,0,0);-moz-transform:translate3d(-12em,0,0);-webkit-transform:translate3d(-12em,0,0);}
-/* */
-.mm_left_button_box{float:left;}
-.mm_right_button_box{float:right;}
-
-/*for the empty list items */
-.empty_list_H a{padding:1.33em;}
-
-/*issue bugfix*/
-/*.ui-panel-dismiss{display:none !important;}*/
-
-/*.ui-panel-page-content-position-left{left:12em;right:-12em;}*/
-
-
-/**********************   Custom Bugfix for gap at wide screen   *********************************/
+/*********************************/
 @media(min-width: 55em){
-.ui-responsive-panel .ui-panel-page-content-open.ui-panel-page-content-position-left
-{margin-right:12em !important;}
-.ui-responsive-panel .ui-panel-page-content-open.ui-panel-page-content-position-right
-{margin-left:12em !important;}
-}
-/**********************   End Custom Bugfix for gap at wide screen   ****************************/
 
+}
+/***************************/
+
+@media only screen and (min-width:320px) and (max-width:479px){
+
+}
+
+@media only screen and (min-width:480px) and (max-width:767px){
+
+}
+
+@media only screen and (min-width:768px) and (max-width:991px)
+{
+
+}
+
+@media only screen and (min-width:992px) and (max-width:1999px)
+{
+
+}
+
+
+.word_wrap{
+/* These are technically the same, but use both */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  }
+
+  .ui-icon-wifi:after {
+  background-image: url("../images/wifi.png");/* Make your icon fit */
+  background-size: 18px 18px;
+  }
+
+  .clear,.clr{clear:both;}
+
+  .d3-ui:after{content: "";
+  height: 20px;
+  width: 100%;
+  display: block;
+  background-repeat: no-repeat;
+  background-position: center center;
+  top: 10px;
+  left: 0px;
+  }
+
+
+  .d3-btn:focus{
+    outline:none;
+    box-shadow: 0 0 12px #38c;
+  }
 
 /********************************************************************************/
 
