@@ -1,0 +1,2034 @@
+#!/bin/bash
+#Joomla component_maker template
+# first bash/shell scripting url
+# http://linuxcommand.org/lc3_wss0010.php
+
+echo "what is the file title of your component (_underscore no spaces)? "
+echo "(for example test_Mod) : "
+read component_name
+#to lowercase
+component_name=${component_name,,}
+#shortcut to component_name
+cn=$component_name
+#to uppercase
+cn_caps=${component_name^^}
+
+#to initial caps
+cn_init=${component_name^}
+
+#full version with com_ added as a prefix
+cn_full="com_"$component_name
+
+#all caps with MOD_
+cn_full_caps="COM_"$cn_caps
+my_year=$(date +%Y)
+my_month_year=$(date +%m-%Y)
+
+echo "what is the official title of your component (spaces allowed here)? "
+echo "(for example Test component)"
+read official_title
+
+echo "what is the authors name? (spaces allowed here)? "
+read authors_name
+
+echo "what email address would you like to associate with this component? "
+read display_email
+
+echo "what web address would you like to associate with this component? "
+read display_url
+
+echo "what company name would you like to associate with this component? "
+read company_name
+
+mkdir $cn_full"_v1.0.0"
+cd $cn_full"_v1.0.0"
+
+echo '<?php
+
+defined("_JEXEC") or die;
+
+class '$cn_full'InstallerScript /*com_folioInstallerScript*/
+{
+    function install($parent)
+    {
+        //JFactory::getDocument()->addScriptDeclaration("alert(\" parent is ".$parent."\")");
+        $parent->getParent()->setRedirectURL("index.html?option='$cn_full'");
+    }
+
+    function uninstall($parent)
+    {
+        echo "<p>" . JText::_("'$cn_full_caps'_UNINSTALL_TEXT") . "</P>";
+    }
+
+    function update($parent)
+    {
+        echo "<p>" . JText::_("'$cn_full_caps'_UPDATE_TEXT") . "</P>";
+    }
+
+    function preflight($type, $parent)
+    {
+        echo "<p>" . JText::_("'$cn_full_caps'_PREFLIGHT_" . $type . "_TEXT") . "</P>";
+    }
+
+    function postflight($type, $parent)
+    {
+        echo "<p>" . JText::_("'$cn_full_caps'_POSTFLIGHT_" . $type . "_TEXT") . "</P>";
+    }
+}' > "script.php"
+
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?xml version="1.0" encoding="utf-8"?>
+    <extension type="component" version="3.0" method="upgrade">
+    <name>'$cn_full'</name><!-- com_folio  -->
+    <author>'$authors_name'</author>
+    <creationDate>'$my_month_year'</creationDate>
+    <copyright> (c) '$my_year' '$company_name' llc. All rights reserved.</copyright>
+    <authorEmail>'$display_email'</authorEmail>
+    <authorUrl>'$display_url'</authorUrl>
+    <version>1.0.0</version>
+    <description>'$cn_full_caps'_XML_DESCRIPTION</description>
+    <scriptfile>script.php</scriptfile>
+
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <uninstall>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+
+    <files folder="site">
+            <filename>index.html</filename>
+            <filename>controller.php</filename>
+            <filename>'$component_name'.php</filename><!-- folio.php  -->
+            <folder>controllers</folder>
+            <folder>language</folder>
+            <folder>models</folder>
+            <folder>tables</folder>
+            <folder>views</folder>
+            <folder>xfiles</folder>
+    </files>
+    <languages folder="site">
+        <language tag="en-GB">language/en-GB/en-GB.'$cn_full'.ini</language><!-- en-GB.com_folio.ini  -->
+    </languages>
+    <administration>
+        <menu img="class:categories">'$official_title'</menu><!-- This is title you want to appear in the admin drop down menu -->
+        <files folder="admin">
+           <filename>index.html</filename>
+           <filename>access.xml</filename>
+           <filename>config.xml</filename>
+           <filename>controller.php</filename>
+           <filename>'$component_name'.php</filename><!-- folio.php  -->
+		   <filename>script.php</filename>
+           <folder>controllers</folder>
+           <folder>helpers</folder>
+           <folder>models</folder>
+		   <folder>language</folder>
+           <folder>sql</folder>
+           <folder>tables</folder>
+           <folder>views</folder>
+           <folder>xfiles</folder>
+        </files>
+        <languages folder="admin">
+        <language tag="en-GB">language/en-GB/en-GB.'$cn_full'.ini</language><!-- en-GB.com_folio.ini  -->
+        <language tag="en-GB">language/en-GB/en-GB.'$cn_full'.sys.ini</language><!-- en-GB.com_folio.sys.ini  -->
+        </languages>
+    </administration>
+    </extension>' > $component_name".xml"
+
+mkdir "admin"
+cd "admin"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+
+mkdir "controllers"
+cd "controllers"
+
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?php
+defined("_JEXEC") or die;
+
+class '$cn_init'Controller'$cn_init' extends JControllerForm
+{
+    //FolioControllerFolio extends JControllerForm
+
+}' > $component_name".php"
+echo '<?php
+defined("_JEXEC") OR die;
+
+/*b.Loc 1957*/
+//i think i added an s here that it didnt need
+class '$cn_init'Controller'$cn_init' extends JControllerAdmin
+{
+    //FolioControllerFolios extends JControllerAdmin
+    //has the form of componentNameControllerViewName
+    public function getModel($name = "'$cn_init'", $prefix = "'$cn_init'Model",
+    $config = array("ignore_request" => true))
+    {//$name = "Folio", $prefix = "FolioModel",
+        $model = parent::getModel($name, $prefix, $config);
+        return $model;
+    }
+}' > $component_name"s.php"
+
+#backout controllers
+cd ..
+
+mkdir "helpers"
+cd "helpers"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+
+echo '<?php
+defined("_JEXEC") or die;
+
+Class '$cn_init'Helper   //FolioHelper
+{
+    public static function getActions($categoryId = 0)
+    {
+        $user = JFactory::getUser();
+        $result = new JObject;
+
+        if(empty($categoryId))
+        {
+            $assetName = "'$cn_full'";//$assetName = "com_folio";
+            $level = "component";
+        }
+        else
+        {
+            //I think int($categoryId);
+            $assetName = "'$cn_full'.category.".(int)$categoryId;//$assetName = "com_folio.category
+            $level = "category";
+        }
+
+        $actions = JAccess::getActions("'$cn_full'", $level);//getActions("com_folio"
+
+        foreach($actions as $action)
+        {
+            $result->set($action->name, $user->authorise($action->name, $assetName));
+        }
+
+        return $result;
+
+        }
+    }' > $component_name".php"
+
+#backout helpers
+cd ..
+
+mkdir "language"
+cd "language"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+mkdir "en-GB"
+cd "en-GB"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo $cn_full_caps'_COMPONENT_LABEL="'$cn_init's"
+'$cn_full_caps'_COMPONENT_DESC="A simple port'$component_name's component."
+JGLOBAL_FIELD_TITLE_DESC="Port'$component_name's item must have a title"
+'$cn_full_caps'_FIELD_ALIAS_DESC="The alias is for internal use only.
+Leave this blank and joomla will fill in a default value from the title.
+It has to be unique for each '$component_name's item in the same category."
+'$cn_full_caps'_MANAGER_'$cn_caps'S="'$cn_init's Manager: '$cn_init'ss"
+'$cn_full_caps'_MANAGER_'$cn_caps'="Manage '$cn_init'"
+'$cn_full_caps'_TITLE_'$cn_caps' = "'$cn_init'"
+'$cn_full_caps'_EDIT_'$cn_caps'="Edit '$cn_init's"
+'$cn_full_caps'_NEW_'$cn_caps'="New '$cn_init's"' > "en-GB."$cn_full".ini"
+
+echo $cn_full_caps'="'$cn_init'"
+'$cn_full_caps'_XML_DESCRIPTION="A simple port'$component_name' extension."
+'$cn_full_caps'_MENU"'$cn_init'"
+'$cn_full_caps'_'$cn_caps'S_VIEW_DEFAULT_DESC = "Show all the '$component_name' items"
+'$cn_full_caps'_'$cn_caps'S_VIEW_DEFAULT_OPTION = "Default"
+'$cn_full_caps'_'$cn_caps'S_VIEW_DEFAULT_TITLE = "Show all '$component_name' items"' > "en-GB."$cn_full".sys.ini"
+
+#backout en-GB & language
+cd ../..
+
+mkdir "models"
+cd "models"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+
+echo '<?php
+defined("_JEXEC") or die;
+
+
+class '$cn_init'Model'$cn_init' extends JModelAdmin  //FolioModelFolio extends JModelAdmin
+{
+    protected $text_prefix = "'$cn_full_caps'";//$text_prefix = "COM_FOLIO";
+
+    public function getTable($type = "'$cn_init'", $prefix = "'$cn_init'Table",/*type = "Folio", $prefix = "FolioTable"*/
+    $config = array())
+    {
+        return JTable::getInstance($type, $prefix, $config);
+    }
+
+    public function getForm($data = array(), $loadData = true)
+    {
+        $app = JFactory::getApplication();
+
+        $form = $this->loadForm("'$cn_full'.'$component_name'", "'$component_name'", array("control" =>
+        "jform", "load_data" => $loadData));//loadForm("com_folio.folio", "folio",
+            if(empty($form))
+            {
+                return false;
+            }
+
+            return $form;
+
+    }
+
+    protected function loadFormData()
+    {
+        $data = JFactory::getApplication()->getUserState("'$cn_full'.edit.'$component_name'.data",array());//getUserState("com_folio.edit.folio.data"
+
+        if(empty($data))
+        {
+            $data = $this->getItem();
+        }
+
+        return $data;
+    }
+
+    protected function prepareTable($table)
+    {
+        $table->title = htmlspecialchars_decode($table->title, ENT_QUOTES);
+    }
+}' > $component_name".php"
+
+echo '<?php
+defined("_JEXEC") or die;
+
+/* Creating the model for the list view
+
+  b.Loc 1981  */
+
+class '$cn_init'Model'$cn_init's extends JModelList //FolioModelFolios extends JModelList
+{
+    public function __construct($config = array())
+    {
+        if(empty($config["filter_fields"]))
+        {
+            $config["filter_fields"]= array("id","a.id","title","a.title",);
+        }
+
+        parent::__construct($config);
+    }
+
+    protected function getListQuery()
+    {
+        $db = $this->getDbo();
+        $query = $db->getQuery(true);
+
+        $query->select(
+            $this->getState("list.select","a.id, a.title")
+        );
+        $query->from($db->quoteName("#__'$component_name'")." AS a"); //("#__folio")." AS a");
+
+        return $query;
+    }
+}' > $component_name"s.php"
+
+mkdir "forms"
+cd "forms"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?xml version="1.0" encoding="utf-8"?>
+<!-- Creating a form b.loc 2060 -->
+<form>
+    <fieldset>
+
+        <field name="id" type="text" default="0" label="JGLOBAL_FIELD_ID_LABEL"
+        readonly="true" class="readonly" description="JGLOBAL_FIELD_DESC"/>
+
+        <field name="title" type="text" class="inputbox" size="40"
+        label="JGLOBAL_TITLE" description="JGLOBAL_FIELD_TITLE_DESC"
+        required="true" />
+
+        <field name="alias" type="text" class="inputbox" size="40"
+        label="JFIELD_ALIAS_LABEL" description="'$cn_full_caps'_FIELD_ALIAS_DESC" />
+        <!-- description="COM_FOLIO_FIELD_ALIAS_DESC" -->
+        <!-- description defined in language file -->
+    </fieldset>
+</form>' > $component_name".xml"
+#backout forms & models
+cd ../..
+
+mkdir "sql"
+cd "sql"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo 'CREATE TABLE IF NOT EXISTS `#__'$component_name'` (
+`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+`title` VARCHAR(250) NOT NULL DEFAULT "",
+`alias` VARCHAR(255) NOT NULL DEFAULT "",
+PRIMARY KEY (`id`)
+ )ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;' > "install.mysql.utf8.sql"
+ echo 'DROP TABLE IF EXISTS `#__'$component_name'`' > "uninstall.mysql.utf8.sql"
+#backout sql
+cd ..
+
+mkdir "tables"
+cd "tables"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+
+echo '<?php
+defined("_JEXEC") or die;
+
+/*the bind function is used to prepare the data immediately
+before it is saved to the database
+
+loc 2043
+*/
+
+
+class '$cn_init'Table'$cn_init' extends JTable //FolioTableFolio extends JTable
+{
+    public function __construct(&$db)
+    {
+        parent::__construct("#__'$component_name'", "id", $db);//construct("#__folio"
+    }
+
+    public function bind($array, $ignore = "")
+    {
+        return parent::bind($array, $ignore);
+    }
+
+    /*the store function writes the data to the database when you
+    submit the form*/
+
+    public function store($updateNulls = false)
+    {
+        return parent::store($updateNulls);
+    }
+}' > $component_name".php"
+echo '<?php
+defined("_JEXEC") or die;
+
+/*the bind function is used to prepare the data immediately
+before it is saved to the database
+
+loc 2043
+*/
+
+//Junk table for making menus
+
+
+class TableMenumaker extends JTable // extends JTable
+{
+    public function __construct(&$db)
+    {
+        parent::__construct("#__menu_types", "id", $db);//construct("#__folio"
+    }
+
+    public function bind($array, $ignore = "")
+    {
+        return parent::bind($array, $ignore);
+    }
+
+    /*the store function writes the data to the database when you
+    submit the form*/
+
+    public function store($updateNulls = false)
+    {
+        return parent::store($updateNulls);
+    }
+
+
+
+    public function checkMenuData()
+    {
+        $db = jFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->quoteName("id"));
+        $query->from($db->quoteName("#__menu_types"));
+        $query->where($db->quoteName("menutype") . " LIKE ". $db->quote("'$component_name'menu"));//'$component_name' Test Page
+        $db->setQuery($query);
+
+        $results = $db->loadResult();
+
+        if($results == "")
+        {
+           return "false";
+        }
+        else
+        {
+            return $results;
+
+        }//end if
+    }//end checkMenuData
+
+    public function checkMenuTitle($tStr)
+    {
+        $db = jFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->quoteName("id"));
+        $query->from($db->quoteName("#__'$component_name'"));
+        $query->where($db->quoteName("title") . " LIKE ". $db->quote($tStr));//'$component_name' Test Page
+        $db->setQuery($query);
+
+        $results = $db->loadResult();
+
+        if($results == "")
+        {
+           return "false";
+        }
+        else
+        {
+            return $results;
+
+        }//end if
+    }//end checkMenuTitle
+
+
+}//end TableMenumaker' > "menumaker.php"
+echo '<?php
+defined("_JEXEC") or die;
+
+class TableNestedSets extends JTableNested
+{
+
+    public function __construct($db)
+    {
+        parent::__construct("#__menu","id",$db);
+    }
+
+
+
+    public function addRoot()
+    {
+        $db = jFactory::getDbo();
+
+       $query = $db->getQuery(true)
+        ->insert("#__menu")
+        ->set("parent_id = 1")
+        ->set("level = 1")
+        ->set("title = \"frustrating\" ");
+        $db->store($query);
+
+        if($db->execute())
+        {
+                return false;
+        }
+
+        //return $db->insertid();
+        $sneekPeek = JFactory::getDocument();
+        $sneekPeek->addScriptDeclaration("alert(\"".$query."\");");
+    }
+
+
+    public function checkMenuItemData()
+    {
+        $db = jFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->quoteName("id"));
+        $query->from($db->quoteName("#__menu"));
+        $query->where($db->quoteName("title") . " LIKE ". $db->quote("'$component_name' Test Page"));//'$component_name' Test Page
+        $db->setQuery($query);
+
+        $results = $db->loadResult();
+
+        if($results == "")
+        {
+           return "false";
+        }
+        else
+        {
+            return $results;
+
+        }//end if
+    }
+
+
+    public function checkTemplateData($dTN)
+    {
+        $db = jFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->quoteName("id"));
+        $query->from($db->quoteName("#__template_styles"));
+        $query->where($db->quoteName("template") . " LIKE ". $db->quote($dTN));//'$component_name' Test Page
+        $db->setQuery($query);
+
+        $results = $db->loadResult();
+
+        if($results == "")
+        {
+           return "false";
+        }
+        else
+        {
+            return $results;
+
+        }//end if
+    }
+
+    public function checkComponentData()
+    {
+        $db = jFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->quoteName("extension_id"));
+        $query->from($db->quoteName("#__extensions"));
+        $query->where($db->quoteName("name") . " LIKE ". $db->quote("'$cn_full'"));//'$component_name' Test Page
+        $db->setQuery($query);
+
+        $results = $db->loadResult();
+
+        if($results == "")
+        {
+           return "false";
+        }
+        else
+        {
+            return $results;
+
+        }//end if
+    }//end checkComponentData
+
+
+/****************************************************************************************************************
+
+    public function saveNewModule($dStr)
+    {
+        $data_obj = json_decode($dStr);
+
+        $db = jFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->quoteName("id"));
+        $query->from($db->quoteName("#__'$component_name'"));
+        $query->where($db->quoteName("title") . " LIKE ". $db->quote($data_obj->menu_title));//'$component_name' Test Page
+        $db->setQuery($query);
+
+        $menu_id = $db->loadResult();
+
+        $db = jFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        //insert columns
+        $columns = array("title","ordering","position","published","module","access","showtitle","params","mm_id");
+
+        //insert values
+        $values = array(
+        $db->quote($data_obj->menu_title),
+        1,
+        $db->quote($data_obj->position),
+        $db->quote($data_obj->status),
+        $db->quote("mod_'$component_name'"),
+        $db->quote($data_obj->access),
+        0,
+        $db->quote("{\"moduleclass_sfx\":\"\",\"module_tag\":\"div\",\"bootstrap_size\":\"0\",\"header_tag\":\"h3\",\"header_class\":\"\",\"style\":\"0\"}"),
+        $db->quote($menu_id));
+
+
+        //prep the insert query
+        $query->insert($db->quoteName("#__modules"))
+        ->columns($db->quoteName($columns))
+        ->values(implode(",",$values));
+        $db->setQuery($query);
+        $db->execute();
+
+
+        return $menu_id;
+
+    }//end saveNewModule
+
+
+    public function getMenuId($dStr)
+    {
+        $data_obj = json_decode($dStr);
+
+        $db = jFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->quoteName("id"));
+        $query->from($db->quoteName("#__'$component_name'"));
+        $query->where($db->quoteName("title") . " LIKE ". $db->quote($data_obj->menu_title));//'$component_name' Test Page
+        $db->setQuery($query);
+
+        $menu_id = $db->loadResult();
+
+        return $menu_id;
+
+    }//end getMenuId
+
+
+    public function getModuleId($idStr)
+    {
+        $db = jFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->quoteName("id"));
+        $query->from($db->quoteName("#__modules"));
+        $query->where($db->quoteName("mm_id") . " LIKE ". $db->quote($idStr));//'$component_name' Test Page
+        $db->setQuery($query);
+
+        $module_id = $db->loadResult();
+
+        return $module_id;
+
+    }//end getModuleId
+
+    public function saveAssets($dStr,$moId)
+    {
+            $data_obj = json_decode($dStr);
+            $name_str = "com_modules.module." . $moId;
+
+            $nID = array("parent_id" => "18","level" => "2","name" => $name_str,
+            "title" => $data_obj->menu_title,
+            "rules" => "{\"core.delete\":{\"6\":1},\"core.edit\":{\"6\":1,\"4\":1},\"core.edit.state\":{\"6\":1,\"5\":1},\"module.edit.frontend\":[]}"
+            );
+
+            if(!parent::getTableName("assets"))
+            {$this->setError(!parent::getError());
+            return false;}
+
+
+           if(!parent::setLocation("18","last-child"))
+            {
+                $this->setError(!parent::getError());
+            return false;}
+
+
+            if(!parent::save($nID))
+            {$this->setError(!parent::getError());
+            return false;}
+
+            return $dStr;
+
+    }
+****************************************************************************************************************/
+
+
+     public function bind($array, $ignore = "")
+    {
+        return parent::bind($array, $ignore);
+    }
+
+    /*the store function writes the data to the database when you
+    submit the form*/
+
+    public function store($updateNulls = false)
+    {
+        return parent::store($updateNulls);
+    }
+
+}//end class' > "nestedsets.php"
+
+#backout tables
+cd ..
+
+mkdir "views"
+cd "views"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+
+mkdir $component_name
+cd $component_name
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?php
+defined("_JEXEC") or die;
+
+class '$cn_caps'View'$cn_caps' extends JViewLegacy //FolioViewFolio extends
+{
+    /*Im still looking for the thing that initiates this FolioViewFolio class
+    maybe its in the joomla framwork to look for the component names, enter its
+    it code into its naming framework and run the classes by referencing the
+    component titles.
+    */
+    protected $item;
+
+    protected $form;
+
+    public function display($tpl = null)
+    {
+        $this->item = $this->get("Item");
+        //used by edit.php to perform $this->form->getLabel();
+        $this->form = $this->get("Form");
+
+        if(count($errors = $this->get("Errors")))
+        {
+            JError::raiseError(500, implode("\n", $errors));
+            return false;
+        }
+
+		//use this to link js and css and inject scripts into the header
+		$fileLink = JFactory::getDocument();
+		// Note: "JUri::" works well online and offline without confusing "\" and "/"
+		$styleLoc = JUri::base() . "components/'$cn_full'/xfiles/css/'$component_name'.css";
+        $fileLink->addStyleSheet($styleLoc);
+
+		//js link
+		$scriptLoc = JUri::base() . "components/'$cn_full'/xfiles/js/'$component_name'.js";
+		$fileLink->addScript($scriptLoc);
+
+		//other ways to inject a script directly into the header.
+		//$JQMLink->addScriptDeclaration("alert(\" JPATH COMPONENT = " . JPATH_COMPONENT . "\");");
+        //JFactory::getDocument()->addScriptDeclaration("alert(\" DIR = " . __DIR__ . "\");");
+
+
+
+
+        $this->addToolbar();
+        parent::display($tpl);
+
+    }
+
+    protected function addToolbar()
+    {
+
+        JFactory::getApplication()->input->set("hidemainmenu", true);
+        //take this away later and see what happens
+
+        JToolbarHelper::title(JText::_("'$cn_full_caps'_MANAGER_'$cn_caps'"), ""); //"COM_FOLIO_MANAGER_FOLIO"
+
+        JToolbarHelper::save("'$component_name'.save"); //"folio.save"
+
+
+        if(empty($this->item->id))
+        {
+            JToolbarHelper::cancel("'$component_name'.cancel"); //"folio.cancel"
+        }
+        else
+        {
+            JToolbarHelper::cancel("'$component_name'.cancel","JTOOLBAR_CLOSE"); //folio.cancel
+        }
+
+    }
+
+}' > "view.html.php"
+
+
+mkdir "tmpl"
+cd "tmpl"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?php
+defined("_JEXEC") or die;
+
+?>
+<!--  -->
+<form action="<?php echo JRoute::_(\"index.html?option='$cn_full'&layout=edit&id=\"
+.(int) $this->item->id); ?> " method="post" name="adminForm" id="adminForm"
+class="form-validate"><!-- option=com_folio&layout -->
+    <div class="row-fluid">
+        <div class="span10 form-horizontal">
+
+            <fieldset>
+                <?php echo JHtml::_("bootstrap.startPane", "myTab",
+                array("active" => "details")); ?>
+
+                <?php echo JHtml::_("bootstrap.addPanel", "myTab", "details",
+                empty($this->item->id) ? JText::_("'$cn_full_caps'_NEW_'$cn_caps'", true) :
+                JText::sprintf("'$cn_full_caps'_EDIT_'$cn_caps'", $this->item->id, true));
+                //JText::_("COM_FOLIO_NEW_FOLIO"   sprintf("COM_FOLIO_EDIT_FOLIO"
+                ?>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                        <script> alert("<?php echo $this ?>"); </script>
+
+                            <?php echo $this->form->getLabel("title");
+                            /*edit/new forms initial title field  and label gets data from
+                            FolioViewFolio $this->form = $this->get("Form");*/
+                            ?>
+                        </div>
+                        <div class="controls">
+                            <?php echo $this->form->getInput("title"); ?>
+                        </div>
+                    </div>
+                    <?php echo JHtml::_("bootstrap.endPanel"); ?>
+
+                    <input type="hidden" name="task" value="" />
+                    <?php echo JHtml::_("form.token"); ?>
+                    <?php echo JHtml::_("bootstrap.endPane"); ?>
+            </fieldset>
+        </div>
+    </div>
+</form>
+<script>
+'$component_name'SampleAjax();
+</script>' > "edit.php"
+#backout tmpl & $component_name
+cd ../..
+
+mkdir $component_name"s"
+cd $component_name"s"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?php
+defined("_JEXEC") or die;
+
+class '$cn_init'View'$cn_init's extends JViewLegacy  //class FolioViewFolios
+{
+    protected $items;
+
+
+    public function display($tpl = null)
+    {
+
+        $this->items = $this->get("items");
+
+        if(count($errors = $this->get("Errors")))
+        {
+            JError::raiseError(500, implode("\n", $errors));
+            return false;
+        }
+
+        $this->addToolbar();
+        parent::display($tpl);
+
+		$fileLink = JFactory::getDocument();
+
+		$scriptLoc2 = JUri::base() . "components/'$cn_full'/xfiles/js/'$component_name's.js";
+		$fileLink->addScript($scriptLoc2);
+
+		$styleLoc2 = JUri::base() . "components/'$cn_full'/xfiles/css/'$component_name's.css";
+		$fileLink->addStyleSheet($styleLoc2);
+
+
+
+		/**************************  PAGE MAKER  ****************************/
+		//Script used to create a siteside page on arrival to components admin page
+
+		//Requires a table that can create nested sets for the lft and rgt fields in the menu table
+		//if it doesn"t run this
+        JTable::addIncludePath(JPATH_COMPONENT . "/tables");
+        //$JQMLink = JFactory::getDocument();
+
+        $table = JTable::getInstance("nestedsets","Table");
+        $table2 = JTable::getInstance("menumaker","Table");
+
+		/************************  CHECK TEMPLATE  *************************/
+		//gets template id to add to menu table record
+		$desired_template_name = "mobilemenu";
+
+        $templateId = $table->checkTemplateData($desired_template_name);
+        //$JQMLink->addScriptDeclaration("alert(\"the template id is ". $templateId ."\");");
+        if($templateId == "false")
+        {
+            $templateId = 0;
+        }
+        /************************  END TEMPLATE  *************************/
+
+       /************************  CHECK COMPONENT  *************************/
+        /*gets component id to add to menu table data - no need for parameters. the component it checks
+		for should have same name as this component*/
+
+        $componentId = $table->checkComponentData();
+        //$JQMLink->addScriptDeclaration("alert(\"the extension id is ". $componentId ."\");");
+        if($componentId == "false")
+        {
+            //i many need to create an error message here
+            $componentId = 0;
+        }
+        /************************  END COMPONENT  *************************/
+
+
+		/************************  CHECK MENU DATA  *************************/
+        //for menu_types table
+		//creates its own MAIN MENU
+        $menuId = $table2->checkMenuData();
+        //$JQMLink->addScriptDeclaration("alert(\"the menu id is ".$menuId."\");");
+
+        //checks for table data and adds data
+        //this should be done when the component is installed but if not.
+        if($menuId == "false")
+        {
+            $mD = array("menutype" => "'$component_name'menu","title" => "'$component_name' Menu",
+            "description" => "Private test menu for the private '$component_name' test page");
+            $table2->getTableName("menu_types");
+            $table2->save($mD);
+           // $table->bind($mD);
+            //$table->store();
+            $menuId = $table2->checkMenuData();
+
+
+            //$JQMLink->addScriptDeclaration("alert(\"the menu id is ".$menuId."\");");
+
+        }//end if
+
+        /************************  END CHECK MENU DATA  *************************/
+
+
+
+		/************************  CHECK MENU ITEM DATA  *************************/
+		/* !!!! THE MAIN EVENT !!!! */
+		//This and the file above but mainly this is the true purpose of this section of code
+		//creates a menu dynamically for this component which will result in a siteside page being available
+		//creates a menu item for the new main menu
+
+        $menuItemId = $table->checkMenuItemData();
+
+       //$JQMLink->addScriptDeclaration("alert(\"the item id is ".$menuItemId."\");");
+
+        //checks for table data and adds data
+        if($menuItemId == "false")
+        {
+            $mID = array("title" => "'$component_name' Test Page","menutype" => "'$component_name'menu","alias" => "'$component_name'-test-page",
+            "path"=>"'$component_name'-test-page","link" => "index.html?option='$cn_full'&view='$component_name's",
+            "type" => "component","published" => "1", "parent_id" => "1", "level" => "1", "language" => "*",
+            "access" => "1","template_style_id" => $templateId, "component_id" => $componentId);
+            $table->getTableName("menu");
+            //note the alias and path are both not only case sensitive but must be lower case.
+            //It can be written in any case but joomla only correctly processes the alias" that are lower case for page views
+            // I spent hours with this little detail
+
+            //everything else is not needed ->save() does them all automagically
+            //$table->bind($sd); //$table->store(); //$table->rebuild(); //$table->rebuildPath($menuItemId);
+
+            $table->setLocation("1","last-child");
+            $table->save($mID);
+
+            //$menuItemId = $table->checkMenuItemData();
+
+
+            //$JQMLink = JFactory::getDocument();
+            //$JQMLink->addScriptDeclaration("alert(\"the item id is ".$menuItemId."\");");
+
+        }//end if
+
+        /************************  END CHECK MENU ITEM DATA  *************************/
+
+
+
+
+
+
+    }//end display
+
+    protected function addToolbar()
+    {
+
+        $canDo = '$cn_init'Helper::getActions(); //$canDo = FolioHelper::getActions();
+        $bar = JToolBar::getInstance("toolbar");
+
+        //may need a capital B as in JToolBarHelper
+        $twitt =
+        //JToolbarHelper::title(JText::_("COM_FOLIO_MANAGER_FOLIOS"), "");
+        JToolbarHelper::title(JText::_("'$cn_full_caps'_TITLE_'$cn_caps'"), "");
+        JToolbarHelper::addNew("'$component_name'.add");/*adds the "new" button to the folio screen*/ //"folio.add"
+
+            if($canDo->get("core.edit"))
+            {
+                JToolbarHelper::editList("'$component_name'.edit"); //folio.edit
+            }
+            if($canDo->get("core.admin"))
+            {
+                JToolbarHelper::preferences("'$cn_full'"); //com_folio
+            }
+        }
+    }' > "view.html.php"
+
+mkdir "tmpl"
+cd "tmpl"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?php
+defined("_JEXEC") or die;
+
+$listOrder = "";
+$listDirn = "";
+/*this is the file that shows up in the back end display after
+choosing folio in the components drop down menu.*/
+?>
+
+
+<!-- <h1>What?</h1>
+<textarea rows="20" cols"50" >
+<?php
+
+/*require_once JPATH_COMPONENT."/views/folios/view.html.php";
+$mish = JViewLegacy::__toString();//still not sure what this class does
+echo $mish; //returns {"id":null,"title":null,"alias":null}
+*/
+?>
+</textarea>
+<div style="width:200px; height:200px; border:1px solid red;">
+<a href="tel:202-713-1314">202-713-1314</a>
+
+</div> -->
+
+<?php /* I think I can use this to block out the rest of this code. */?>
+<!-- -->
+<form action="<?php echo JRoute::_(\"index.html?option='$cn_full'&view='$component_name's\");/*option=com_folio&view=folios */ ?>"
+ method="post" name="adminForm" id="adminForm" >
+    <div id="j-main-container" class="span10">
+        <div class="clearfix"></div>
+        <table class="table table-striped" id="'$component_name'List"><!--id="folioList" -->
+            <thead>
+                <tr>
+                    <th width="1%" class="hidden-phone">
+                        <input type="checkbox" name="checkall-toggle" value=""
+                        title="<?php echo JText::_(\"JGLOBAL_CHECK_ALL\"); ?>"
+                        onclick="Joomla.checkAll(this)" />
+                    </th>
+                    <th class="title">
+                        <?php echo JHtml::_("grid.sort", "JGLOBAL_TITLE", "a.title",
+                        $listDirn, $listOrder); ?>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($this->items as $i => $item): ?>
+                <tr class="row<?php echo $i % 2; ?>">
+                    <td class="center hidden-phone">
+                        <?php echo JHtml::_("grid.id", $i, $item->id); ?>
+                    </td>
+                    <td class="nowrap has-context">
+                    <a href="<?php echo JRoute::_(\"index.html?option='$cn_full'&task
+                    ='$component_name'.edit&id=\".(int) $item->id); /*\"index.html?option=com_folio&task
+                    =folio.edit&id=\"*/ ?>">
+                        <?php echo $this->escape($item->title); ?>
+                    </a>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <input type="hidden" name="task" value="" />
+        <input type="hidden" name="boxchecked" value="0" />
+        <input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
+        <input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
+        <?php echo JHtml::_("form.token"); ?>
+    </div>
+</form>
+<script>
+'$component_name'SampleAjax2();
+</script>' > "default.php"
+#backout tmpl & $component_name  & views
+cd ../../..
+
+mkdir "xfiles"
+cd "xfiles"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+
+mkdir "css"
+cd "css"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '*{box-sizing:border-box;}
+
+  /** admin side **/
+
+  /*responsive menu and media breakpoints*/
+
+  /*@media (min-width:800px) and (max-width:900px){
+  .controls.btn_Cont {margin-left:380px !important;}
+  }*/ /*works*/
+
+  /*@media only screen and (min-width:800px) and (max-width:900px){
+  .controls.btn_Cont {margin-left:380px !important;}
+  }*/ /*works*/
+
+
+
+  @media only screen and (min-width:320px) and (max-width:479px){
+
+  }
+
+  @media only screen and (min-width:480px) and (max-width:767px){
+
+  }
+
+  @media only screen and (min-width:768px) and (max-width:991px)
+  {
+
+  }
+
+  @media only screen and (min-width:992px) and (max-width:1999px)
+  {
+
+  }
+
+  #jform_position,#jform_suffix{height:29px;}
+
+  *[class*="_MBCont"]{ height:auto;margin:auto;width:95%;}/*border:1px solid yellow;*//*box-sizing:border-box;*/
+  *[class*="_icon_menu"]{ height:120px; border:1px solid #ccc; border-radius:10px 0 0 0;padding:3px;
+  overflow-y:auto;width:70%;float:left;}
+
+
+
+  /*group sample*/
+  .col_btn_group0:hover, .col_btn_group0:focus, .col_btn_group0:active, .col_btn_group0.active,
+  .col_btn_group0.disabled, .col_btn_group0[disabled]{
+  background-image:none !important;}/*background-color:#828282 !important;*/
+
+
+  /****************** special IUN assignemnts ************************/
+  /*image sample*/
+  .jqm_icon_delete{background: url("../images/jqm_delete.png");}
+  .jqm_icon_action{background: url("../images/jqm_action.png");}
+
+  /* for temporary test classes */
+  .test_yellow{border:1px solid yellow !important;}
+  .test_red{border:1px solid red !important;}
+  .test_blue{border:1px solid blue !important;}
+  .test_green{border:1px solid green !important;}
+  .test_purple{border:1px solid purple !important;}
+  .test_orange{border:1px solid orange !important;}' > $component_name".css"
+echo '*{box-sizing:border-box;}
+
+  /** admin mobilemenus side **/
+
+  .menus_title{width:20% !important;}
+
+  @media only screen and (min-width:320px) and (max-width:479px){
+
+  }
+
+
+
+
+  @media only screen and (min-width:480px) and (max-width:767px){
+
+  }
+
+
+
+
+  @media only screen and (min-width:768px) and (max-width:991px)
+  {
+
+  }
+
+
+
+
+  @media only screen and (min-width:992px) and (max-width:1999px)
+  {
+
+  }
+
+
+  .jqm_icon_delete{background: url("../images/jqm_delete.png");}
+  .jqm_icon_action{background: url("../images/jqm_action.png");}
+
+
+  .test_yellow{border:1px solid yellow !important;}
+  .test_red{border:1px solid red !important;}
+  .test_blue{border:1px solid blue !important;}
+  .test_green{border:1px solid green !important;}
+  .test_purple{border:1px solid purple !important;}
+  .test_orange{border:1px solid orange !important;}' > $component_name"s.css"
+#backout xfiles
+cd ..
+
+mkdir "images"
+cd "images"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+#backout xfiles
+cd ..
+
+mkdir "js"
+cd "js"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '//alert("mobile scripting is here");
+
+
+    function '$component_name'SampleAjax(obj)
+    {
+        var resultStr = "";
+
+        var title = " some title ";
+
+        var urlStr = "index.html?format=raw&option='$component_name'&task=getFakeData";
+		//finds admin side components controller.php
+
+           jQuery.ajax(
+           {
+            url:urlStr,
+            data:"title=" + title,
+            type:"POST",
+               success:function(result)
+               {
+                   if(result == "false"){return;}
+                   alert("test " + result + " has returned ");
+                   resultStr = result;
+
+
+
+                }
+
+            })
+
+
+        return resultStr;
+
+    }//end getURLString' > $component_name".js"
+echo '//alert("'$component_name' running!")
+
+
+    function '$component_name'SampleAjax2()
+    {
+        var testUrl = "index.html?format=raw&option='$cn_full'&task=getFakeData";
+        var tStr = " this with an s "
+        //alert("checked ids = " + module_data.id_str + "\n module number is " + module_data.module_number);
+
+        jQuery(document).ready(function()
+        {
+            jQuery.ajax(
+            {
+                url:testUrl,
+                data:{"title": tStr},
+                type:"POST",
+                success:function(result)
+                {
+                   alert("test " + result + " has returned");
+
+                }
+
+            })
+        });//end jQ(doc
+
+    }//end '$component_name'SampleAjax2'> $component_name"s.js"
+#backout js, xfiles & admin
+cd ../..
+
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?xml version="1.0" encoding="utf-8"?>
+<access component="'$component_name'"><!-- component="com_folio">   -->
+    <section name="component">
+        <action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />
+        <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" />
+        <action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />
+        <action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" />
+        <action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />
+        <action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_EDITSTATE_COMPONENT_DESC" />
+        <action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />
+    </section>
+</access>' > "access.xml"
+echo '<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <fieldset name="component" label="'$cn_full_caps'_COMPONENT_LABEL" description="'$cn_full_caps'_COMPONENT_DESC"></fieldset>
+    <fieldset name="permissions" description="JCONFIG_PERMISSIONS_DESC" label="JCONFIG_PERMISSIONS_LABEL">
+        <field name="rules" type="rules" component="'$cn'" filter="rules" validate="rules" label="JCONFIG_PERMISSIONS_LABEL" section="component" />
+    </fieldset>
+</config>' > "config.xml"
+echo '<?php
+defined("_JEXEC") OR die;/*stops page from being accessed directly*/
+
+/*class for the controller. component name folled my controller*/
+
+/*Creating the controllers
+b.Loc 1921
+*/
+
+class '$cn_init'Controller extends JControllerLegacy
+{
+    //FolioController extends JControllerLegacy
+    protected $default_view = "'$cn's";//folios
+
+    public function display($cachable = false, $urlparams = false)
+    {require_once JPATH_COMPONENT."/helpers/'$cn'.php";//folio
+
+    $view = $this->input->get("view","'$cn's");//folios
+    $layout = $this->input->get("layout","default");
+
+     $id = $this->input->getInt("id");
+
+      if($view == "'$cn'" && $layout == "edit" &&  !$this->checkEditId("'$cn_full'.edit.'$cn'", $id))//com_folio.edit.folio"
+      {//$view == "folio"
+          $this->setError(JText::sprintf("JLIB_APPLICATION_ERROR_UNHELD_ID",$id));
+          $this->setMessage($this->getError(),"error");
+          $this->setRedirect(JRoute::_("index.html?option='$cn_full'&review='$cn's", false));//?option=com_folio  &review=folios"
+
+          return false;
+          }
+
+          parent::display();
+
+          return $this;
+        }
+
+
+		function getFakeData()
+        {
+            //the alert below does nothing because im not actually on this page when i call this function through ajax
+            //$JQMLink = JFactory::getDocument();
+            //$JQMLink->addScriptDeclaration("alert(\" work it is working \");");
+
+			//targets the table in the tables directory
+			JSession::checkToken( "get" ) or die( "Invalid Token" );
+			/*
+			//	window["FORM_TOKEN"] = "<?php //echo JHtml::_(\"form.token\"); ?>";
+
+				//this one works
+				window["FORM_TOKEN"] = "<?php echo JSession::getFormToken(); ?>";
+			*/
+
+            $targTitle = $_POST["title"];
+
+            echo " returned title is " . $targTitle;//this works though
+
+        }//end workit
+
+
+
+
+
+}' > "controller.php"
+echo '<?php
+defined("_JEXEC") or die;
+
+if(!JFactory::getUser()->authorise("core.manage","'$cn_full'"))//com_folio
+{
+    return JError::raiseWarning(404, JText::_("JERROR_ALERTNOAUTHOR"));
+}
+
+$controller = JControllerLegacy::getInstance("'$cn_init'");//Folio
+$controller->execute(JFactory::getApplication()->input->get("task"));
+$controller->redirect();' > $cn".php"
+echo '<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.0" method="upgrade">
+    <name>'$cn_full'</name><!-- com_folio  -->
+    <author>'$authors_name'</author>
+    <creationDate>'$my_month_year'</creationDate>
+    <copyright>(c) '$my_year' '$company_name' llc. All rights reserved.</copyright>
+    <authorEmail>'$display_email'</authorEmail>
+    <authorUrl>'$display_url'</authorUrl>
+    <version>1.0.0</version>
+    <description>'$cn_full_caps'_XML_DESCRIPTION</description><!-- COM_FOLIO_XML_DESCRIPTION  -->
+    <scriptfile>script.php</scriptfile>
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <uninstall>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+
+    <files folder="site">
+            <filename>index.html</filename>
+            <filename>controller.php</filename>
+            <filename>'$cn'.php</filename><!-- folio.php  -->
+            <folder>controllers</folder>
+            <folder>language</folder>
+            <folder>models</folder>
+            <folder>views</folder>
+    </files>
+    <languages folder="site">
+        <language tag="en-GB">language/en-GB/en-GB.'$cn_full'.ini</language><!-- en-GB.com_folio.ini  -->
+    </languages>
+    <administration>
+        <menu img="class:categories">'$cn_full_caps'_MENU</menu><!-- COM_FOLIO_MENU  -->
+        <files folder="admin">
+           <filename>index.html</filename>
+           <filename>access.xml</filename>
+           <filename>config.xml</filename>
+           <filename>controller.php</filename>
+           <filename>'$cn'.php</filename><!-- folio.php  -->
+           <folder>controllers</folder>
+           <folder>helpers</folder>
+           <folder>models</folder>
+           <folder>sql</folder>
+           <folder>tables</folder>
+           <folder>views</folder>
+        </files>
+        <languages folder="admin">
+        <language tag="en-GB">language/en-GB/en-GB.'$cn_full'.ini</language><!-- en-GB.com_folio.ini  -->
+        <language tag="en-GB">language/en-GB/en-GB.'$cn_full'.sys.ini</language><!-- en-GB.com_folio.sys.ini  -->
+        </languages>
+    </administration>
+    </extension>' > $cn".xml"
+echo '<?php
+
+defined("_JEXEC") or die;
+
+class '$cn_full'InstallerScript /*com_folioInstallerScript*/
+{
+    function install($parent)
+    {
+        //JFactory::getDocument()->addScriptDeclaration("alert(" parent is ".$parent."")");
+        $parent->getParent()->setRedirectURL("index.html?option='$cn_full'");
+    }
+
+    function uninstall($parent)
+    {
+        echo "<p>" . JText::_("'$cn_full_caps'_UNINSTALL_TEXT") . "</P>";
+    }
+
+    function update($parent)
+    {
+        echo "<p>" . JText::_("'$cn_full_caps'_UPDATE_TEXT") . "</P>";
+    }
+
+    function preflight($type, $parent)
+    {
+        echo "<p>" . JText::_("'$cn_full_caps'_PREFLIGHT_" . $type . "_TEXT") . "</P>";
+    }
+
+    function postflight($type, $parent)
+    {
+        echo "<p>" . JText::_("'$cn_full_caps'_POSTFLIGHT_" . $type . "_TEXT") . "</P>";
+    }
+}' > "script.php"
+
+#back out of admin
+cd ..
+
+#####################################    SITE SECTION     #############################################
+
+mkdir "site"
+cd "site"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+
+mkdir "controllers"
+cd "controllers"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?php
+defined("_JEXEC") or die;
+class '$cn_init'ControllerD3templates extends JControllerForm //class FolioControllerFolios
+{
+}' > $cn"s.php"
+cd ..
+mkdir "language"
+cd "language"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+
+mkdir "en-GB"
+cd "en-GB"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo ''$cn_full_caps'_COMPANY = "Company: "
+'$cn_full_caps'_PHONE = "Phone: "' > "en-GB."$cn_full".ini"
+#back out en-GB & language
+cd ../..
+
+mkdir "models"
+cd "models"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?php
+defined("_JEXEC") or die;
+
+class '$cn_init'Model'$cn_init's extends  JModelList //FolioModelFolios extends  JModelList
+{
+    public function __construct($config = array())
+    {
+        if(empty($config["filter_fields"]))
+        {
+            $config["filter_fields"] = array(
+                                                "id", "a.id",
+                                                "title", "a.title" );
+
+
+        }
+
+        parent::__construct($config);
+    }
+
+    protected function getListQuery()
+    {
+        $db = $this->getDbo();
+        $query = $db->getQuery(true);
+
+        $query->select(
+            $this->getState(
+                "list.select",
+                "a.id, a.title") );
+
+        $query->from($db->quoteName("#__'$cn'")." AS a"); /*("#__folio")." AS a"*/
+
+        return $query;
+
+    }
+
+}' > $cn"s.pphp"
+#back ouit of models
+cd ..
+
+mkdir "tables"
+cd "tables"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?php
+defined("_JEXEC") or die;
+
+class TableModuleAssets extends JTableNested
+{
+
+    public function __construct($db)
+    {
+        parent::__construct("#__'$cn'","id",$db);
+    }
+
+    public function getMenuData($moId)
+    {
+
+        $db = jFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->quoteName(array("id","title","menu_data","menu_options")));
+        $query->from($db->quoteName("#__'$cn'"));
+        $query->where($db->quoteName("module_id") . " LIKE ". $db->quote($moId));//'$cn' Test Page
+        $db->setQuery($query);
+
+        $menuData = json_encode($db->loadObject());
+        return $menuData;
+
+
+    }//end getMenuData
+
+	public function getFakeData($moId)
+	{
+		//run some $db query
+		//return something;
+		return "absolutely nothing!";
+
+	}
+
+}//end class
+' > "moduleassets.php"
+#back out of tables
+cd ..
+
+mkdir "views"
+cd "views"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+
+mkdir $cn"s"
+cd $cn"s"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?php
+defined("_JEXEC") or die;
+
+class '$cn_init'View'$cn_init's extends JViewLegacy //class FolioViewFolios
+{
+    protected $items;
+
+    public function display($tpl = null)
+    {
+        $this->items = $this->get("Items");
+
+        if(count($errors = $this->get("Errors")))
+        {
+            JError::raiseError(500, implode("\n", $errors));
+            return false;
+        }
+
+        //samples for connecting
+        //works to add icons to mobile web app.
+        /*$myDoc3 = JFactory::getDocument();
+        $href1 = "/mirror/images/flame2x.png";
+        $attribs1 = array("sizes" => "128x128");
+        $myDoc3->addHeadLink( $href1, "shortcut icon", "rel", $attribs1 );*/
+
+
+        //turn off the address bar for mobile web apps
+        /*$myDoc1 = JFactory::getDocument();
+        $myDoc1->setMetaData( "mobile-web-app-capable", "yes" );
+
+        $myDoc2 = JFactory::getDocument();
+        $myDoc2->setMetaData( "apple-mobile-web-app-capable", "yes" );*/
+
+        //for best results delete templates favicon
+        $myDoc5 = JFactory::getDocument();
+        $href3 = "/mirror/images/favicon2.ico";
+        $rel3 = "shortcut icon";
+        $type3 = "image/vnd.microsoft.icon";
+        $myDoc5->addFavicon($href3,$type3, $rel3);
+
+        //$myDoc6 = new JDocumentHtml;
+        //$myDoc6->addFavicon($href3,$type3);
+
+        //sets document title override
+        $myDoc6 = JFactory::getDocument();
+        //$myTitle1 = array();
+        $myDoc5->setHeadData(["title" => "'$official_title'"]);//$myTitle1
+
+
+		$fileLink = JFactory::getDocument();
+
+		$styleLoc = JUri::base() . "components/'$cn_full'/xfiles/css/'$cn'_site.css";
+        $fileLink->addStyleSheet($styleLoc);
+
+		$scriptLoc = JUri::base() . "components/'$cn_full'/xfiles/js/'$cn'_site.js";
+        $fileLink->addScript($scriptLoc);
+
+
+        parent::display($tpl);
+
+
+    }
+
+}
+' > "view.html.php"
+
+mkdir "tmpl"
+cd "tmpl"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '<?php
+defined("_JEXEC") or die;
+?>
+<div id="popup_holder" class="popup_holder" >
+
+</div><!-- href="#d3_popup" -->
+<a class="d3_cnxs test_yellow ui-btn ui-corner-all"  data-rel="popup" data-position-to="window" data-transition="pop" onclick="$(\"#d3_popup\").popup();$(\"#d3_popup\").popup(\"open\");
+">Link</a>
+<div class="d3_communities"  ></div>
+<script>
+window["SITEURL"] = "<?php echo JUri::current(); ?>";
+//console.info("site url = " + SITEURL);//
+
+window["FORM_TOKEN"] = "<?php echo JSession::getFormToken(); ?>";
+//getFakeArcData("123");
+acr_setTheStage();
+
+window["IMG_URL"] = "<?php echo JUri::root(); ?>components/com_arc/xfiles/images/";
+
+//window["HOME_URL"] =  "<?php echo JUri::root(); ?>index.html/???/home";//see view.html.php
+//console.info("home url = " + HOME_URL);
+
+screen.orientation.lock("portrait-primary").catch(function(){});
+
+//this removes all the endless hashs added to the address to make an extremely lengthly url
+location.hash = "";
+//getFakeArcData("123");
+d3_create_panel({"home":"popup_holder","panel_name":"d3_panel","popup_name":"d3_popup"});
+</script>
+' > "default.php"
+echo '<?xml version="1.0" encoding="utf-8" ?>
+<metadata>
+    <layout title="'$cn_full'_'$cn's_view_default_title"
+    option="'$cn_full'_'$cn's_view_default_option">
+    <!-- language strings found in admin sys.ini file -->
+        <message>
+            <![CDATA['$cn_full'_'$cn's_view_default_desc]]>
+        </message>
+    </layout>
+</metadata>
+' > "default.xml"
+#back out of tmpl $cn & views
+cd ../../..
+
+mkdir "xfiles"
+cd "xfiles"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+
+mkdir "css"
+cd "css"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '*{box-sizing:border-box;}
+
+/** SiteSide **/
+.d3_cnxs{height:50px; width:100%;}
+.d3_popup{width:90%;}
+#d3_popup-popup{width:90% !important;}
+.d3_panel_main_content{height:300px;}
+.d3_panel_infoBox{height:20px;margin-bottom:0px;}
+.d3_panel_infoBtn{float:right;margin:0px;right:-8px;}
+.d3_panel_infoCont{margin-bottom: 10px;}
+.d3_info_close_btn{float:right; position:relative !important; top:-30px !important; right:-7px !important;margin:0px !important;}
+.d3_infoBox{display:none;}
+.main_d3_info{border: 1px solid #ddd; padding: 0px 10px;}
+
+
+@media only screen and (min-width:320px) and (max-width:479px){
+
+}
+
+@media only screen and (min-width:480px) and (max-width:767px){
+
+}
+
+@media only screen and (min-width:768px) and (max-width:991px)
+{
+
+}
+
+@media only screen and (min-width:992px) and (max-width:1999px)
+{
+
+}
+
+/***************** test rules **********************/
+.test_yellow{border:1px solid yellow !important;}
+.test_red{border:1px solid red !important;}
+.test_blue{border:1px solid blue !important;}
+.test_green{border:1px solid green !important;}
+.test_purple{border:1px solid purple !important;}
+.test_orange{border:1px solid orange !important;}
+/***************** test rules **********************/
+
+' > $cn"_site.css"
+#back out of css
+cd ..
+
+mkdir "images"
+cd "images"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+#back out of images
+cd ..
+
+mkdir "js"
+cd "js"
+echo "<!DOCTYPE html><title></title>" > "index.html"
+echo '//alert("d3 script running!");
+
+	function d3_create_panel(obj)
+	{
+		//creates a popup panel
+		var home = obj.home;
+		var pop_name = obj.popup_name;
+		var pan_name = obj.panel_name;
+
+		var modal_target = (document.getElementById(home)) ? document.getElementById(home) : document.getElementsByClassName(home)[0];
+
+			var d3_popup = document.createElement("div");
+			d3_popup.id = "d3_popup";//pop_name
+			d3_popup.className = "d3_popup";
+			d3_popup.dataset.role = "popup";
+			d3_popup.setAttribute("data-overlay-theme","b");
+			d3_popup.dataset.theme = "a";
+			d3_popup.setAttribute("data-dismissible","false");
+
+				var d3_panel = document.createElement("div");
+				d3_panel.id = "d3_panel";//pan_name
+				d3_panel.dataset.role = "panel";
+				d3_panel.dataset.position = "right";
+				d3_panel.dataset.display = "overlay";
+				d3_panel.dataset.theme = "a";
+				d3_panel.setAttribute("data-position-fixed","false");
+				d3_panel.setAttribute("data-dismissible","false");
+				d3_panel.setAttribute("data-swipe-close","false");
+
+					var d3_panel_close = document.createElement("a");
+					d3_panel_close.id = "gps_panel_close"
+					d3_panel_close.setAttribute("href","#");
+					//d3_panel_close.onclick = alight_panel_reset;
+
+					d3_panel_close.dataset.rel = "close";
+					d3_panel_close.dataset.ajax = "false";
+					d3_panel_close.className = "gps_panel_btn ui-btn ui-btn-right ui-btn-inline ui-shadow"
+					+ " ui-corner-all ui-mini ui-icon-delete ui-btn-icon-right ui-btn-icon-notext";
+					d3_panel_close.innerHTML = "cancel";
+
+
+					var d3_panel_inner = document.createElement("div");
+					d3_panel_inner.id="d3_innerPanel";
+					d3_panel_inner.className = "ui-panel-inner";
+
+				d3_panel.appendChild(d3_panel_close);
+				//d3_panel.appendChild(d3_panel_refresh);//moved to prep_CoordViewer3()
+				d3_panel.appendChild(d3_panel_inner);
+
+			//d3_popup.appendChild(d3_panel);
+
+
+		/*********************  The rest of the inner popup panel **********************/
+		var pUS_closeBtn =  document.createElement("a");
+				pUS_closeBtn.id = "pUS_closeBtn";
+				pUS_closeBtn.setAttribute("href","#");
+				pUS_closeBtn.dataset.rel = "back";
+				pUS_closeBtn.className = "ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right";
+				//pUS_closeBtn.onclick = user_reset;
+				pUS_closeBtn.title = "cancel";
+				pUS_closeBtn.innerHTML = "close";
+
+				var d3_panel_main = document.createElement("div");
+				d3_panel_main.id = "d3_panel_main";
+				d3_panel_main.setAttribute("role","main");
+				d3_panel_main.className = "ui-content ";
+
+					var d3_panel_main_content = document.createElement("div");
+					d3_panel_main_content.id = "d3_panel_main_content";
+					d3_panel_main_content.className = "d3_panel_main_content ui-grid-a";
+
+						//content area
+
+					//d3_panel_main_content.appendChild();
+
+					var d3_panel_infoBox = document.createElement("div");
+					d3_panel_infoBox.id = "d3_panel_infoBox";
+					d3_panel_infoBox.className = "d3_panel_infoBox";
+
+						var d3_panel_infoBtn = document.createElement("div");
+						d3_panel_infoBtn.id = "d3_panel_infoBtn";
+						d3_panel_infoBtn.setAttribute("href","#");
+						d3_panel_infoBtn.className = "d3_panel_infoBtn ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-info ui-btn-icon-notext";
+						d3_panel_infoBtn.title = "help info";
+						d3_panel_infoBtn.onclick = function(){d3_toggleDisplay({"id":"d3_infoBox"});d3_toggleDisplay({"id":"d3_panel_infoBtn"});};
+						d3_panel_infoBtn.innerHTML = "info";
+						d3_panel_infoBtn.style.display = "block";
+
+
+
+					d3_panel_infoBox.appendChild(d3_panel_infoBtn);
+
+
+					var d3_panel_infoCont = document.createElement("div");
+					d3_panel_infoCont.id = "d3_panel_infoCont";
+					d3_panel_infoCont.className = "d3_panel_infoCont";
+
+						var d3_infoBox = document.createElement("div");
+						d3_infoBox.id = "d3_infoBox";
+						d3_infoBox.className = "d3_infoBox";
+						d3_infoBox.style.display = "none";
+
+							var d3_info_close_btn = document.createElement("a");
+							d3_info_close_btn.id = "d3_info_close_btn";
+							d3_info_close_btn.setAttribute("href","#");
+							d3_info_close_btn.className = "d3_info_close_btn  ui-btn ui-corner-all ui-alt-icon ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right";
+							d3_info_close_btn.onclick = function(){d3_toggleDisplay({"id":"d3_infoBox"});d3_toggleDisplay({"id":"d3_panel_infoBtn"});};
+
+							var main_d3_info = document.createElement("div");
+							main_d3_info.id = "main_d3_info";
+							main_d3_info.className = "main_d3_info";
+							main_d3_info.innerHTML = "<p>You don"t have to be registered to start exchanging information. If you are a brand new user click the guest icon.</p>";
+
+						d3_infoBox.appendChild(d3_info_close_btn);
+						d3_infoBox.appendChild(main_d3_info);
+
+
+					d3_panel_infoCont.appendChild(d3_infoBox);
+
+				d3_panel_main.appendChild(d3_panel_main_content);
+				d3_panel_main.appendChild(d3_panel_infoBox);
+				d3_panel_main.appendChild(d3_panel_infoCont);
+
+			d3_popup.appendChild(pUS_closeBtn);
+			d3_popup.appendChild(d3_panel_main);
+
+
+		modal_target.appendChild(d3_popup);
+
+		//$("#d3_popup").popup();
+
+	}//end d3_create_ui
+
+	function d3_toggleDisplay(obj)
+	{
+		var disp_id = obj.id;
+		var targ_el = (document.getElementById(disp_id)) ? document.getElementById(disp_id) : document.getElementsByClassName(disp_id)[0];
+
+		targ_el.style.display = (targ_el.style.display == "none") ? "block" : "none";
+
+	}//end d3_toggleDisplay
+
+    function getFakeCnxData(mId)
+    {
+		//called from default in views > cnxs > tmpl > default
+		//ajax calls getFakeData in cnx controller.php
+
+        //alert("module id = " + mId);
+
+
+
+
+			var uploadData = {};
+
+			var form_token = FORM_TOKEN;
+
+
+			var urlMod = "getFakeData";//put controller.php method call here
+
+			var ctrl_Url = "index.html?option=com_d3&task=" + urlMod + "&format=raw&" + form_token + "=1";//this works
+
+
+
+			$(document).ready(function()
+			{
+			   //alert("getMenuData running!");
+			   $.ajax(
+			   {
+
+				url:ctrl_Url,
+				/*data:{"userData":userData},*/
+				data:uploadData,
+				//data:userData,
+				type:"POST",
+				   success:function(result,textStatus,xhr)
+				   {
+					   console.log("scan textStatus = " + textStatus);
+					   console.log("scan xhr  = " + xhr);
+					   console.info("scan xhr status = " + xhr.status);
+
+					   //alert("Ajax test result data = " + result);//string
+						console.log("Ajax test result data = " + result);//string
+						//var makeMenu = new menuMaker(result);
+						//makeMenu.display();
+
+						//if upload is successful
+
+						//change the upload icon to successful
+						//if(result.indexOf("invalid token") == -1)
+						if(result != "Invalid Token")
+						{
+							if(result == "controller connection successful")
+							{
+
+
+
+							}
+							else if(result.indexOf("<!doctype html>") == -1){
+								//this comes up if the entire page"s html comes back in the request
+								alert("Give me moment...  Resubmit your entry by  \n pressing the go button again.");
+
+								//$.mobile.loading("hide");
+							}
+						}else
+						{
+								alert("Its not you... its me. \n Your session timer has expired. \n Please reset the page and give \n \"us\" a little more time.")
+
+								window.location.replace(SITEURL);
+						}
+
+						//hide
+
+					}
+
+				})
+			})//end ajax
+
+    }//end getFakeCnxData
+' > $cn"_site.js"
+#back out of js & xfiles
+cd ../..
+
+echo '<?php
+defined("_JEXEC") or die;
+
+class d3templateController extends JControllerLegacy //class folioController
+{
+
+		function testModule()
+        {
+			//targets the table in the tables directory
+			JSession::checkToken( "get" ) or die( "Invalid Token" );
+			/*
+			//	window["FORM_TOKEN"] = "<?php //echo JHtml::_(\"form.token\"); ?>";
+
+				//this one works
+				window["FORM_TOKEN"] = "<?php echo JSession::getFormToken(); ?>";
+			*/
+
+            echo "we are back too ";
+
+        }//end testModule
+
+		function getFakeData()
+		{
+			//called from d3template_site.js calls getFakeData in moduleassests.php in tables directory
+			//targets the table in the tables directory
+
+			//targets the table in the tables directory
+			JSession::checkToken( "get" ) or die( "Invalid Token" );
+			/*
+			//	window["FORM_TOKEN"] = "<?php //echo JHtml::_(\"form.token\"); ?>";
+
+				//this one works
+				window["FORM_TOKEN"] = "<?php echo JSession::getFormToken(); ?>";
+			*/
+
+			JTable::addIncludePath(JPATH_COMPONENT . "/tables");
+			$table = JTable::getInstance("moduleassets","Table");
+
+			$module_str = $_POST["module_str"];
+
+			$menu_data = $table->getFakeData("pass anything or nothing");
+
+			echo "controller connection successful";
+			//echo " menu data = " . $menu_data . " & module string = " . $module_str;
+
+		}
+
+}' > "controller.php"
+echo '<?php
+defined("_JEXEC") or die;
+
+$controller = JControllerLegacy::getInstance("'$cn_init'); //getInstance("Folio");
+$controller->execute(JFactory::getApplication()->input->get("task"));
+$controller->redirect();
+
+' > $cn".php"
+
+#echo > ""

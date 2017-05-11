@@ -1,13 +1,22 @@
 #!/bin/bash
 #Joomla module_maker template
+# first bash/shell scripting url
+# http://linuxcommand.org/lc3_wss0010.php
 
 echo "what is the file title of your module (_underscore no spaces)? "
 echo "(for example test_Mod) : "
-read module_name;
-module_name=${module_name,,};
-mn_caps=${module_name^^};
-mn_init=${module_name^};
-mn_full="mod_"$module_name;
+read module_name
+#to lowercase
+module_name=${module_name,,}
+#to uppercase
+mn_caps=${module_name^^}
+#to initial caps
+mn_init=${module_name^}
+
+#full version with mod_ added as a prefix
+mn_full="mod_"$module_name
+
+#all caps with MOD_
 mn_full_caps="MOD_"$mn_caps
 my_year=$(date +%Y)
 my_month_year=$(date +%m-%Y)
