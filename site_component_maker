@@ -28,6 +28,14 @@ echo "what is the official title of your component (spaces allowed here)? "
 echo "(for example Test component)"
 read official_title
 
+echo "what would you like the path to your component to be?"
+echo "(it will be added to the url index.php/custom-name for example: 'basic-test-page' or 'basic/test') "
+read custom_path
+
+echo "what title would you like to describe you component page?"
+echo " (word or phrase - spaces are allowed for example: 'basic test page' ) "
+read component_title
+
 echo "what is the authors name? (spaces allowed here)? "
 read authors_name
 
@@ -39,6 +47,8 @@ read display_url
 
 echo "what company name would you like to associate with this component? "
 read company_name
+
+template_name="mobilemenu"
 
 mkdir $cn_full"_v1.0.0"
 cd $cn_full"_v1.0.0"
@@ -52,7 +62,7 @@ class '$cn_full'InstallerScript /*com_folioInstallerScript*/
     function install($parent)
     {
         //JFactory::getDocument()->addScriptDeclaration("alert(\" parent is ".$parent."\")");
-        $parent->getParent()->setRedirectURL("index.html?option='$cn_full'");
+        $parent->getParent()->setRedirectURL("index.php?option='$cn_full'");
     }
 
     function uninstall($parent)
@@ -79,7 +89,7 @@ class '$cn_full'InstallerScript /*com_folioInstallerScript*/
 echo "<!DOCTYPE html><title></title>" > "index.html"
 echo '<?xml version="1.0" encoding="utf-8"?>
     <extension type="component" version="3.0" method="upgrade">
-    <name>'$cn_full'</name><!-- com_folio  -->
+    <name>'$cn_full'</name><!-- com_folio  this is used as the name on the component folder-->
     <author>'$authors_name'</author>
     <creationDate>'$my_month_year'</creationDate>
     <copyright> (c) '$my_year' '$company_name' llc. All rights reserved.</copyright>
@@ -115,7 +125,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
         <language tag="en-GB">language/en-GB/en-GB.'$cn_full'.ini</language><!-- en-GB.com_folio.ini  -->
     </languages>
     <administration>
-        <menu img="class:categories">'$official_title'</menu><!-- This is title you want to appear in the admin drop down menu -->
+        <menu img="class:categories">'$cn_full_caps'_MENU</menu><!-- This is title you want to appear in the admin drop down menu -->
         <files folder="admin">
            <filename>index.html</filename>
            <filename>access.xml</filename>
@@ -222,21 +232,24 @@ echo "<!DOCTYPE html><title></title>" > "index.html"
 mkdir "en-GB"
 cd "en-GB"
 echo "<!DOCTYPE html><title></title>" > "index.html"
-echo $cn_full_caps'_COMPONENT_LABEL="'$cn_init's"
-'$cn_full_caps'_COMPONENT_DESC="A simple port'$component_name's component."
-JGLOBAL_FIELD_TITLE_DESC="Port'$component_name's item must have a title"
-'$cn_full_caps'_FIELD_ALIAS_DESC="The alias is for internal use only.
+
+#'$cn_full_caps'_TITLE_'$cn_caps' controlls the admin view title
+echo $cn_full_caps'_COMPONENT_LABEL = "'$cn_init's 7"
+'$cn_full_caps'_COMPONENT_DESC = "A simple '$component_name's component."
+JGLOBAL_FIELD_TITLE_DESC = "'$component_name's item must have a title"
+'$cn_full_caps'_FIELD_ALIAS_DESC = "The alias is for internal use only.
 Leave this blank and joomla will fill in a default value from the title.
 It has to be unique for each '$component_name's item in the same category."
-'$cn_full_caps'_MANAGER_'$cn_caps'S="'$cn_init's Manager: '$cn_init'ss"
-'$cn_full_caps'_MANAGER_'$cn_caps'="Manage '$cn_init'"
-'$cn_full_caps'_TITLE_'$cn_caps' = "'$cn_init'"
-'$cn_full_caps'_EDIT_'$cn_caps'="Edit '$cn_init's"
-'$cn_full_caps'_NEW_'$cn_caps'="New '$cn_init's"' > "en-GB."$cn_full".ini"
+'$cn_full_caps'_MANAGER_'$cn_caps'S = "'$cn_init's Manager: '$cn_init's"
+'$cn_full_caps'_MANAGER_'$cn_caps' = "Manage '$cn_init'"
+'$cn_full_caps'_TITLE_'$cn_caps' = "'$official_title'"
+'$cn_full_caps'_EDIT_'$cn_caps' = "Edit '$cn_init's"
+'$cn_full_caps'_NEW_'$cn_caps' = "New '$cn_init's"' > "en-GB."$cn_full".ini"
 
-echo $cn_full_caps'="'$cn_init'"
-'$cn_full_caps'_XML_DESCRIPTION="A simple port'$component_name' extension."
-'$cn_full_caps'_MENU"'$cn_init'"
+#$cn_full_caps here controls the extension mngr menu title and the '$cn_full_caps'_MENU along with the xml file controls the drop down menu
+echo $cn_full_caps' = "'$official_title'"
+'$cn_full_caps'_XML_DESCRIPTION = "A simple port'$component_name' extension."
+'$cn_full_caps'_MENU = "'$official_title'"
 '$cn_full_caps'_'$cn_caps'S_VIEW_DEFAULT_DESC = "Show all the '$component_name' items"
 '$cn_full_caps'_'$cn_caps'S_VIEW_DEFAULT_OPTION = "Default"
 '$cn_full_caps'_'$cn_caps'S_VIEW_DEFAULT_TITLE = "Show all '$component_name' items"' > "en-GB."$cn_full".sys.ini"
@@ -506,6 +519,7 @@ class TableNestedSets extends JTableNested
         if($db->execute())
         {
                 return false;
+
         }
 
         //return $db->insertid();
@@ -721,7 +735,7 @@ echo "<!DOCTYPE html><title></title>" > "index.html"
 echo '<?php
 defined("_JEXEC") or die;
 
-class '$cn_caps'View'$cn_caps' extends JViewLegacy //FolioViewFolio extends
+class '$cn_init'View'$cn_init' extends JViewLegacy //FolioViewFolio extends
 {
     /*Im still looking for the thing that initiates this FolioViewFolio class
     maybe its in the joomla framwork to look for the component names, enter its
@@ -799,7 +813,7 @@ defined("_JEXEC") or die;
 
 ?>
 <!--  -->
-<form action="<?php echo JRoute::_(\"index.html?option='$cn_full'&layout=edit&id=\"
+<form action="<?php echo JRoute::_("index.php?option='$cn_full'&layout=edit&id="
 .(int) $this->item->id); ?> " method="post" name="adminForm" id="adminForm"
 class="form-validate"><!-- option=com_folio&layout -->
     <div class="row-fluid">
@@ -891,7 +905,7 @@ class '$cn_init'View'$cn_init's extends JViewLegacy  //class FolioViewFolios
 
 		/************************  CHECK TEMPLATE  *************************/
 		//gets template id to add to menu table record
-		$desired_template_name = "mobilemenu";
+		$desired_template_name = "'$template_name'";
 
         $templateId = $table->checkTemplateData($desired_template_name);
         //$JQMLink->addScriptDeclaration("alert(\"the template id is ". $templateId ."\");");
@@ -926,7 +940,7 @@ class '$cn_init'View'$cn_init's extends JViewLegacy  //class FolioViewFolios
         if($menuId == "false")
         {
             $mD = array("menutype" => "'$component_name'menu","title" => "'$component_name' Menu",
-            "description" => "Private test menu for the private '$component_name' test page");
+            "description" => "Private test menu for the private '$component_title'");
             $table2->getTableName("menu_types");
             $table2->save($mD);
            // $table->bind($mD);
@@ -955,8 +969,8 @@ class '$cn_init'View'$cn_init's extends JViewLegacy  //class FolioViewFolios
         //checks for table data and adds data
         if($menuItemId == "false")
         {
-            $mID = array("title" => "'$component_name' Test Page","menutype" => "'$component_name'menu","alias" => "'$component_name'-test-page",
-            "path"=>"'$component_name'-test-page","link" => "index.html?option='$cn_full'&view='$component_name's",
+            $mID = array("title" => "'$component_title'","menutype" => "'$component_name'menu","alias" => "'$custom_path'",
+            "path"=>"'$custom_path'","link" => "index.php?option='$cn_full'&view='$component_name's",
             "type" => "component","published" => "1", "parent_id" => "1", "level" => "1", "language" => "*",
             "access" => "1","template_style_id" => $templateId, "component_id" => $componentId);
             $table->getTableName("menu");
@@ -1040,7 +1054,7 @@ echo $mish; //returns {"id":null,"title":null,"alias":null}
 
 <?php /* I think I can use this to block out the rest of this code. */?>
 <!-- -->
-<form action="<?php echo JRoute::_(\"index.html?option='$cn_full'&view='$component_name's\");/*option=com_folio&view=folios */ ?>"
+<form action="<?php echo JRoute::_("index.php?option='$cn_full'&view='$component_name's");/*option=com_folio&view=folios */ ?>"
  method="post" name="adminForm" id="adminForm" >
     <div id="j-main-container" class="span10">
         <div class="clearfix"></div>
@@ -1049,7 +1063,7 @@ echo $mish; //returns {"id":null,"title":null,"alias":null}
                 <tr>
                     <th width="1%" class="hidden-phone">
                         <input type="checkbox" name="checkall-toggle" value=""
-                        title="<?php echo JText::_(\"JGLOBAL_CHECK_ALL\"); ?>"
+                        title="<?php echo JText::_("JGLOBAL_CHECK_ALL"); ?>"
                         onclick="Joomla.checkAll(this)" />
                     </th>
                     <th class="title">
@@ -1065,8 +1079,8 @@ echo $mish; //returns {"id":null,"title":null,"alias":null}
                         <?php echo JHtml::_("grid.id", $i, $item->id); ?>
                     </td>
                     <td class="nowrap has-context">
-                    <a href="<?php echo JRoute::_(\"index.html?option='$cn_full'&task
-                    ='$component_name'.edit&id=\".(int) $item->id); /*\"index.html?option=com_folio&task
+                    <a href="<?php echo JRoute::_("index.php?option='$cn_full'&task
+                    ='$component_name'.edit&id=".(int) $item->id); /*\"index.php?option=com_folio&task
                     =folio.edit&id=\"*/ ?>">
                         <?php echo $this->escape($item->title); ?>
                     </a>
@@ -1220,8 +1234,8 @@ echo '//alert("mobile scripting is here");
         var resultStr = "";
 
         var title = " some title ";
-
-        var urlStr = "index.html?format=raw&option='$component_name'&task=getFakeData";
+        //formerly  '$component_name'
+        var urlStr = "index.php?format=raw&option='$cn_full'&task=getFakeData";
 		//finds admin side components controller.php
 
            jQuery.ajax(
@@ -1250,7 +1264,7 @@ echo '//alert("'$component_name' running!")
 
     function '$component_name'SampleAjax2()
     {
-        var testUrl = "index.html?format=raw&option='$cn_full'&task=getFakeData";
+        var testUrl = "index.php?format=raw&option='$cn_full'&task=getFakeData";
         var tStr = " this with an s "
         //alert("checked ids = " + module_data.id_str + "\n module number is " + module_data.module_number);
 
@@ -1320,7 +1334,7 @@ class '$cn_init'Controller extends JControllerLegacy
       {//$view == "folio"
           $this->setError(JText::sprintf("JLIB_APPLICATION_ERROR_UNHELD_ID",$id));
           $this->setMessage($this->getError(),"error");
-          $this->setRedirect(JRoute::_("index.html?option='$cn_full'&review='$cn's", false));//?option=com_folio  &review=folios"
+          $this->setRedirect(JRoute::_("index.php?option='$cn_full'&review='$cn's", false));//?option=com_folio  &review=folios"
 
           return false;
           }
@@ -1340,7 +1354,7 @@ class '$cn_init'Controller extends JControllerLegacy
 			//targets the table in the tables directory
 			JSession::checkToken( "get" ) or die( "Invalid Token" );
 			/*
-			//	window["FORM_TOKEN"] = "<?php //echo JHtml::_(\"form.token\"); ?>";
+			//	window["FORM_TOKEN"] = "<?php //echo JHtml::_("form.token"); ?>";
 
 				//this one works
 				window["FORM_TOKEN"] = "<?php echo JSession::getFormToken(); ?>";
@@ -1403,7 +1417,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
         <language tag="en-GB">language/en-GB/en-GB.'$cn_full'.ini</language><!-- en-GB.com_folio.ini  -->
     </languages>
     <administration>
-        <menu img="class:categories">'$cn_full_caps'_MENU</menu><!-- COM_FOLIO_MENU  -->
+        <menu img="class:categories">'$cn_full_caps'_MENU</menu><!-- COM_FOLIO_MENU i dont think this one is even used -->
         <files folder="admin">
            <filename>index.html</filename>
            <filename>access.xml</filename>
@@ -1432,7 +1446,7 @@ class '$cn_full'InstallerScript /*com_folioInstallerScript*/
     function install($parent)
     {
         //JFactory::getDocument()->addScriptDeclaration("alert(" parent is ".$parent."")");
-        $parent->getParent()->setRedirectURL("index.html?option='$cn_full'");
+        $parent->getParent()->setRedirectURL("index.php?option='$cn_full'");
     }
 
     function uninstall($parent)
@@ -1665,7 +1679,7 @@ acr_setTheStage();
 
 window["IMG_URL"] = "<?php echo JUri::root(); ?>components/com_arc/xfiles/images/";
 
-//window["HOME_URL"] =  "<?php echo JUri::root(); ?>index.html/???/home";//see view.html.php
+//window["HOME_URL"] =  "<?php echo JUri::root(); ?>index.php/'$cn'/home";//see view.html.php
 //console.info("home url = " + HOME_URL);
 
 screen.orientation.lock("portrait-primary").catch(function(){});
@@ -1863,7 +1877,7 @@ echo '//alert("d3 script running!");
 							var main_d3_info = document.createElement("div");
 							main_d3_info.id = "main_d3_info";
 							main_d3_info.className = "main_d3_info";
-							main_d3_info.innerHTML = "<p>You don"t have to be registered to start exchanging information. If you are a brand new user click the guest icon.</p>";
+							main_d3_info.innerHTML = "<p>You dont have to be registered to start exchanging information. If you are a brand new user click the guest icon.</p>";
 
 						d3_infoBox.appendChild(d3_info_close_btn);
 						d3_infoBox.appendChild(main_d3_info);
@@ -1911,7 +1925,7 @@ echo '//alert("d3 script running!");
 
 			var urlMod = "getFakeData";//put controller.php method call here
 
-			var ctrl_Url = "index.html?option=com_d3&task=" + urlMod + "&format=raw&" + form_token + "=1";//this works
+			var ctrl_Url = "index.php?option='$cn_full'&task=" + urlMod + "&format=raw&" + form_token + "=1";//this works
 
 
 
@@ -1977,7 +1991,7 @@ cd ../..
 echo '<?php
 defined("_JEXEC") or die;
 
-class d3templateController extends JControllerLegacy //class folioController
+class '$cn'Controller extends JControllerLegacy //class folioController
 {
 
 		function testModule()
@@ -1985,7 +1999,7 @@ class d3templateController extends JControllerLegacy //class folioController
 			//targets the table in the tables directory
 			JSession::checkToken( "get" ) or die( "Invalid Token" );
 			/*
-			//	window["FORM_TOKEN"] = "<?php //echo JHtml::_(\"form.token\"); ?>";
+			//	window["FORM_TOKEN"] = "<?php //echo JHtml::_("form.token"); ?>";
 
 				//this one works
 				window["FORM_TOKEN"] = "<?php echo JSession::getFormToken(); ?>";
@@ -1997,13 +2011,13 @@ class d3templateController extends JControllerLegacy //class folioController
 
 		function getFakeData()
 		{
-			//called from d3template_site.js calls getFakeData in moduleassests.php in tables directory
+			//called from '$cn'_site.js calls getFakeData in moduleassests.php in tables directory
 			//targets the table in the tables directory
 
 			//targets the table in the tables directory
 			JSession::checkToken( "get" ) or die( "Invalid Token" );
 			/*
-			//	window["FORM_TOKEN"] = "<?php //echo JHtml::_(\"form.token\"); ?>";
+			//	window["FORM_TOKEN"] = "<?php //echo JHtml::_("form.token"); ?>";
 
 				//this one works
 				window["FORM_TOKEN"] = "<?php echo JSession::getFormToken(); ?>";
@@ -2025,7 +2039,7 @@ class d3templateController extends JControllerLegacy //class folioController
 echo '<?php
 defined("_JEXEC") or die;
 
-$controller = JControllerLegacy::getInstance("'$cn_init'); //getInstance("Folio");
+$controller = JControllerLegacy::getInstance("'$cn_init'"); //getInstance("Folio");
 $controller->execute(JFactory::getApplication()->input->get("task"));
 $controller->redirect();
 
