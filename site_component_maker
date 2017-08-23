@@ -3,7 +3,7 @@
 # first bash/shell scripting url
 # http://linuxcommand.org/lc3_wss0010.php
 
-echo "what is the file title of your component (_underscore no spaces)? "
+echo "what is the file title of your component (use '_' underscore no spaces)? "
 echo "(for example test_Mod) : "
 read component_name
 #to lowercase
@@ -374,7 +374,12 @@ echo 'CREATE TABLE IF NOT EXISTS `#__'$component_name'` (
 `alias` VARCHAR(255) NOT NULL DEFAULT "",
 PRIMARY KEY (`id`)
  )ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;' > "install.mysql.utf8.sql"
- echo 'DROP TABLE IF EXISTS `#__'$component_name'`' > "uninstall.mysql.utf8.sql"
+
+ echo 'DROP TABLE IF EXISTS `#__'$component_name'`;
+ DELETE FROM `#__menu` WHERE `menutype` = '"'"''$component_name'menu'"'"';
+ DELETE FROM `#__menu_types` WHERE `menutype` = '"'"''$component_name'menu'"'"';
+
+ ' > "uninstall.mysql.utf8.sql"
 #backout sql
 cd ..
 
@@ -534,7 +539,7 @@ class TableNestedSets extends JTableNested
         $query = $db->getQuery(true);
         $query->select($db->quoteName("id"));
         $query->from($db->quoteName("#__menu"));
-        $query->where($db->quoteName("title") . " LIKE ". $db->quote("'$component_name' Test Page"));//'$component_name' Test Page
+        $query->where($db->quoteName("title") . " LIKE ". $db->quote("'$component_title'"));//formerly '$component_name' Test Page
         $db->setQuery($query);
 
         $results = $db->loadResult();
@@ -1005,6 +1010,13 @@ class '$cn_init'View'$cn_init's extends JViewLegacy  //class FolioViewFolios
     {
 
         $canDo = '$cn_init'Helper::getActions(); //$canDo = FolioHelper::getActions();
+        /*
+          $can_str = var_export($canDo);
+          //returns:
+          // JObject::__set_state(array( "_errors" => array ( ), "core.admin" => true, "core.manage" => true, "core.create" => true,
+          // "core.delete" => true, "core.edit" => true, "core.edit.state" => true, "core.edit.own" => true, ))
+        */
+
         $bar = JToolBar::getInstance("toolbar");
 
         //may need a capital B as in JToolBarHelper
@@ -1015,11 +1027,11 @@ class '$cn_init'View'$cn_init's extends JViewLegacy  //class FolioViewFolios
 
             if($canDo->get("core.edit"))
             {
-                JToolbarHelper::editList("'$component_name'.edit"); //folio.edit
+                JToolbarHelper::editList("'$component_name'.edit"); //folio.edit - adds edit button
             }
             if($canDo->get("core.admin"))
             {
-                JToolbarHelper::preferences("'$cn_full'"); //com_folio
+                JToolbarHelper::preferences("'$cn_full'"); //com_folio - adds option button
             }
         }
     }' > "view.html.php"
@@ -1548,7 +1560,7 @@ echo "<!DOCTYPE html><title></title>" > "index.html"
 echo '<?php
 defined("_JEXEC") or die;
 
-class TableModuleAssets extends JTableNested
+class Table'$cn' extends JTableNested
 {
 
     public function __construct($db)
@@ -1581,7 +1593,8 @@ class TableModuleAssets extends JTableNested
 	}
 
 }//end class
-' > "moduleassets.php"
+' > "'$cn'.php"
+#table names can be anything as long as they match in the controller and in the tables class
 #back out of tables
 cd ..
 
@@ -1675,7 +1688,25 @@ window["SITEURL"] = "<?php echo JUri::current(); ?>";
 
 window["FORM_TOKEN"] = "<?php echo JSession::getFormToken(); ?>";
 //getFakeArcData("123");
-acr_setTheStage();
+//arc_setTheStage();
+
+/****** This code checks for an internet connection  *******/
+window["CNX_STATUS"] = "<?php
+  $connected = @fsockopen(\"www.google.com\",80);
+
+  if($connected)
+  {
+    //$is_conn = true;
+    $is_conn = "online";
+    fclose($connected);
+  }else
+  {
+    //$is_conn = false;
+    $is_conn = "offline";
+  }
+   echo $is_conn;
+?>";
+/****************** end connection checker  ****************/
 
 window["IMG_URL"] = "<?php echo JUri::root(); ?>components/com_arc/xfiles/images/";
 
@@ -2024,9 +2055,14 @@ class '$cn'Controller extends JControllerLegacy //class folioController
 			*/
 
 			JTable::addIncludePath(JPATH_COMPONENT . "/tables");
-			$table = JTable::getInstance("moduleassets","Table");
+			$table = JTable::getInstance("'$cn'","Table");
+      //this represents the filename not the class inside the file.
+      //but the names do have to be similar - if not exact i used bigTest & TableBigTest of  TablebigTest
+      //table names can be anything as long as they match in the controller and in the tables class
 
-			$module_str = $_POST["module_str"];
+			//$module_str = $_POST["module_str"];
+      $jinput = JFactory::getApplication()->input;
+      $module_str = $jinput->get("module_str");//this worked
 
 			$menu_data = $table->getFakeData("pass anything or nothing");
 
